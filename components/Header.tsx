@@ -3,6 +3,7 @@ import { BiSearch } from "react-icons/bi";
 import UserMenuButton from "./UserMenuButton";
 import SignInButton from "./SignInButton";
 import Logo from "./Logo";
+import { useSession } from "next-auth/react";
 
 function SearchBar() {
   return (
@@ -20,6 +21,8 @@ function SearchBar() {
 }
 
 export default function Header() {
+  const { status } = useSession();
+
   return (
     <header className="flex justify-between w-full px-6 py-2 gap-6">
       <div className="flex flex-1 items-center gap-6">
