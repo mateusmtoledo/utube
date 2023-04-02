@@ -1,6 +1,8 @@
 import { CgMenu } from "react-icons/cg";
 import { BiSearch } from "react-icons/bi";
-import { AiFillYoutube } from "react-icons/ai";
+import UserMenuButton from "./UserMenuButton";
+import SignInButton from "./SignInButton";
+import Logo from "./Logo";
 
 function SearchBar() {
   return (
@@ -22,19 +24,11 @@ export default function Header() {
     <header className="flex justify-between w-full px-6 py-2 gap-6">
       <div className="flex flex-1 items-center gap-6">
         <CgMenu size={24} />
-        <div className="flex items-center gap-1">
-          <div className="relative">
-            <AiFillYoutube size={32} className="fill-green-500" />
-            <span className="absolute w-3 h-3 bg-white top-1/2 bottom-1/2 left-1/2 right-1/2 transform -translate-x-1/2 -translate-y-1/2 -z-10" />
-          </div>
-          <h1 className="font-bold text-xl">UTube</h1>
-        </div>
+        <Logo />
       </div>
       <SearchBar />
       <div className="flex flex-1 justify-end items-center">
-        <button className="font-medium text-lg bg-violet-600 aspect-square w-8 rounded-full">
-          M
-        </button>
+        {status === "authenticated" ? <UserMenuButton /> : <SignInButton />}
       </div>
     </header>
   );

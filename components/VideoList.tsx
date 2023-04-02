@@ -24,7 +24,7 @@ function Video({ video }: VideoProps) {
 
   return (
     <li>
-      <div className="bg-slate-800 aspect-[9/5] w-full mb-4 rounded-xl"></div>
+      <div className="bg-slate-700 aspect-[9/5] w-full mb-4 rounded-xl"></div>
       <div className="flex gap-3">
         <Image
           src={author.avatar}
