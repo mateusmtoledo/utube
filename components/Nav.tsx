@@ -9,10 +9,20 @@ import { SlSettings } from "react-icons/sl";
 import { FiGithub } from "react-icons/fi";
 
 // TODO remove this when users have actual icons
-function UserIcon({ name, bgColor }: { name: string; bgColor: string }) {
+export function UserIcon({
+  name,
+  bgColor,
+  large,
+}: {
+  name: string;
+  bgColor: string;
+  large?: boolean;
+}) {
   return (
     <div
-      className={`flex justify-center items-center font-medium text-md ${bgColor} w-6 h-6 rounded-full`}
+      className={`flex justify-center items-center font-medium text-md ${bgColor} ${
+        large ? "w-8 h-8" : "w-6 h-6"
+      } rounded-full`}
     >
       {name.charAt(0).toUpperCase()}
     </div>

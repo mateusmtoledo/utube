@@ -6,7 +6,11 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      gridTemplateColumns: {
+        "video-list": "repeat(auto-fill, minmax(320px, 1fr))",
+      },
+    },
   },
   plugins: [],
 };
