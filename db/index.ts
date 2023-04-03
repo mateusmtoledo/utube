@@ -1,5 +1,3 @@
 import { Pool } from "pg";
 
-export const pool = new Pool({
-  connectionString: process.env.PG_URI,
-});
+export const pool = new Pool();
