@@ -3,6 +3,7 @@ import Nav from "@/components/Nav";
 import VideoList, { VideoType } from "@/components/VideoList";
 import Head from "next/head";
 import { faker } from "@faker-js/faker";
+import CategoryList from "@/components/CategoryList";
 
 function generateFillerVideo(id: number) {
   faker.seed(id);
@@ -27,25 +28,6 @@ function generateCategories() {
       .map((word) => word.slice(0, 1).toUpperCase() + word.slice(1))
       .join(" ");
   });
-}
-
-// TODO handle overflow
-function CategoryList({ categories }: { categories: string[] }) {
-  return (
-    <ul className="flex gap-3 overflow-hidden">
-      {categories.map((category, i) => (
-        <CategoryTag key={i}>{category}</CategoryTag>
-      ))}
-    </ul>
-  );
-}
-
-function CategoryTag({ children }: { children: string }) {
-  return (
-    <li className="px-4 p-2 overflow-ellipsis whitespace-nowrap bg-slate-900 rounded-lg text-sm leading-tight hover:bg-slate-800">
-      {children}
-    </li>
-  );
 }
 
 type HomeProps = {
