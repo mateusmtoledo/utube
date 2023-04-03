@@ -45,9 +45,9 @@ export default function Home({ videos, categories }: HomeProps) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <main className="flex p-6">
+      <main className="flex mt-3">
         <Nav />
-        <div className="min-w-0 w-full space-y-8">
+        <div className="flex-1 space-y-4">
           <CategoryList categories={categories} />
           <VideoList videos={videos} />
         </div>

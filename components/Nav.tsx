@@ -45,7 +45,7 @@ function NavItem({ Icon, children }: NavItemProps) {
 
 export default function Nav() {
   return (
-    <nav className="w-60 pr-8 -ml-3">
+    <nav className="w-60 px-3">
       <ul>
         <NavItem Icon={AiOutlineHome}>Home</NavItem>
         <NavItem Icon={BsCollectionPlay}>Subscriptions</NavItem>
