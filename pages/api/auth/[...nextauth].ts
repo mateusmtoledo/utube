@@ -1,13 +1,11 @@
 import NextAuth from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 import PostgresAdapter from "@/db/adapters/PostgresAdapter";
-import { Pool } from "pg";
+import { pool } from "@/db/index";
 
 if (!process.env.GITHUB_ID || !process.env.GITHUB_SECRET) {
   throw new Error("GitHub credentials not properly set");
 }
-
-const pool = new Pool();
 
 export const authOptions = {
   providers: [
