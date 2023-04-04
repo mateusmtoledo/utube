@@ -1,6 +1,6 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { IconType } from "react-icons";
 import ReactDOM from "react-dom";
 import { VscSignOut } from "react-icons/vsc";
@@ -9,6 +9,7 @@ import Logo from "./Logo";
 import { AiFillGithub } from "react-icons/ai";
 import { HiOutlineUserCircle } from "react-icons/hi";
 import Skeleton from "react-loading-skeleton";
+import { VideoUploadButton } from "./VideoUpload";
 
 type OAuthButtonProps = {
   provider: string;
@@ -148,11 +149,20 @@ export function UserMenuButton() {
 export default function UserStatus() {
   const { status } = useSession();
 
+  let content: ReactNode;
+
   if (status === "loading") {
-    return <Skeleton circle width={32} height={32} />;
+    content = <Skeleton circle width={32} height={32} />;
   } else if (status === "authenticated") {
-    return <UserMenuButton />;
+    content = (
+      <>
+        <VideoUploadButton />
+        <UserMenuButton />
+      </>
+    );
   } else {
-    return <SignInButton />;
+    content = <SignInButton />;
   }
+
+  return <div className="flex gap-4 items-center">{content}</div>;
 }

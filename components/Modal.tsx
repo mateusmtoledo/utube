@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 
 type ModalProps = {
   children: ReactNode;
-  closeModal(): void;
+  closeModal?: () => void;
   maxWidth?: number;
 };
 
