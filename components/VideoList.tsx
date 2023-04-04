@@ -1,25 +1,15 @@
+import { VideoType } from "@/lib/types";
 import Image from "next/image";
-
-export type VideoType = {
-  id: number;
-  title: string;
-  date: number;
-  viewCount: number;
-  author: {
-    name: string;
-    avatar: string;
-  };
-};
 
 type VideoProps = {
   video: VideoType;
 };
 
 function Video({ video }: VideoProps) {
-  const { title, date, viewCount, author } = video;
-
+  const { title, date, view_count, author } = video;
   const dateString = `${Math.floor(
-    (Date.now() - date) / (1000 * 60 * 60 * 24 * 30)
+    (new Date().getTime() - new Date(date).getTime()) /
+      (1000 * 60 * 60 * 24 * 30)
   )} months ago`;
 
   return (
@@ -27,7 +17,7 @@ function Video({ video }: VideoProps) {
       <div className="bg-slate-700 aspect-[9/5] w-full mb-4 rounded-xl"></div>
       <div className="flex gap-3">
         <Image
-          src={author.avatar}
+          src={author.image}
           alt=""
           width={36}
           height={36}
@@ -39,7 +29,7 @@ function Video({ video }: VideoProps) {
           </p>
           <div className="text-slate-400 text-sm">
             <p>{author.name}</p>
-            <p>{`${viewCount} views · ${dateString}`}</p>
+            <p>{`${view_count} views · ${dateString}`}</p>
           </div>
         </div>
       </div>

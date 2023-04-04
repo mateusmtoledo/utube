@@ -1,20 +1,24 @@
 import Header from "@/components/Header";
 import Nav from "@/components/Nav";
-import VideoList, { VideoType } from "@/components/VideoList";
+import VideoList from "@/components/VideoList";
 import Head from "next/head";
 import { faker } from "@faker-js/faker";
 import CategoryList from "@/components/CategoryList";
+import { VideoType } from "@/lib/types";
 
-function generateFillerVideo(id: number) {
+function generateFillerVideo(id: number): VideoType {
   faker.seed(id);
+  if (id === 1) console.log(faker.date.past(1).toString());
   return {
     id: id,
-    viewCount: faker.datatype.number(),
+    view_count: faker.datatype.number(),
     title: faker.lorem.sentence(),
-    date: faker.date.past(1).getTime(),
+    date: faker.date.past(1).toDateString(),
+    thumbnail: "",
     author: {
+      id: 1,
       name: faker.name.fullName(),
-      avatar: faker.image.unsplash.buildings(64, 64),
+      image: faker.image.unsplash.buildings(64, 64),
     },
   };
 }
