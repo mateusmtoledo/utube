@@ -1,4 +1,4 @@
-import NextAuth from "next-auth";
+import NextAuth, { Session, User } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 import PostgresAdapter from "@/db/adapters/PostgresAdapter";
 import { pool } from "@/db/index";
@@ -8,6 +8,12 @@ if (!process.env.GITHUB_ID || !process.env.GITHUB_SECRET) {
 }
 
 export const authOptions = {
+  callbacks: {
+    session: ({ session, user }: { session: Session; user: User }) => {
+      session.user = user;
+      return session;
+    },
+  },
   providers: [
     GithubProvider({
       clientId: process.env.GITHUB_ID,

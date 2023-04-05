@@ -8,11 +8,11 @@ import { VideoType } from "@/lib/types";
 
 function generateFillerVideo(id: number): VideoType {
   faker.seed(id);
-  if (id === 1) console.log(faker.date.past(1).toString());
   return {
     id: id,
     view_count: faker.datatype.number(),
     title: faker.lorem.sentence(),
+    description: faker.lorem.sentence(),
     date: faker.date.past(1).toDateString(),
     thumbnail: "",
     author: {

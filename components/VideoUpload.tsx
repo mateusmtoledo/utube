@@ -1,8 +1,10 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import Modal from "./Modal";
 import { BiVideoPlus } from "react-icons/bi";
 import { VscClose } from "react-icons/vsc";
 import { MdFileUpload } from "react-icons/md";
+import api from "@/adapters/axios";
+import axios from "axios";
 
 export function VideoUploadButton() {
   const [formVisible, setFormVisible] = useState(false);
@@ -25,10 +27,10 @@ export function VideoUploadButton() {
 }
 
 type VideoInputProps = {
-  setFile: Dispatch<SetStateAction<File | null>>;
+  handleUpload: (file: File) => void;
 };
 
-function VideoInput({ setFile }: VideoInputProps) {
+function VideoInput({ handleUpload }: VideoInputProps) {
   return (
     <button className="relative">
       <div className="flex flex-col gap-4">
@@ -41,11 +43,15 @@ function VideoInput({ setFile }: VideoInputProps) {
       </div>
       <input
         type="file"
-        onChange={(e) => e.target.files && setFile(e.target.files[0])}
+        onChange={(e) => e.target.files && handleUpload(e.target.files[0])}
         className="absolute text-[0px] top-0 left-0 opacity-0 w-full h-full cursor-pointer"
       />
     </button>
   );
+}
+
+function VideoDetailsForm() {
+  return <div></div>;
 }
 
 type VideoUploadFormProps = {
@@ -55,9 +61,26 @@ type VideoUploadFormProps = {
 function VideoUploadForm({ closeForm }: VideoUploadFormProps) {
   const [file, setFile] = useState<File | null>(null);
 
+  async function handleUpload(file: File) {
+    setFile(file);
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "s57kcdni");
+    const url = `https://api.cloudinary.com/v1_1/dniq0qli1/auto/upload`;
+    const uploadResponse = await axios.post(url, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    const uploadData = uploadResponse.data;
+    const res = await api.post("/video", {
+      public_id: uploadData.public_id,
+      originalName: file.name,
+    });
+    console.log(res);
+  }
+
   return (
     <Modal>
-      <div className="bg-slate-800 border border-slate-700 rounded-xl">
+      <div className="bg-slate-800 border border-slate-700 rounded-xl relative">
         <div className="p-3 flex justify-between items-center">
           <p className="font-medium text-xl">Upload video</p>
           <button onClick={closeForm}>
@@ -66,7 +89,7 @@ function VideoUploadForm({ closeForm }: VideoUploadFormProps) {
         </div>
         <hr className="border-slate-700" />
         <div className="flex justify-center items-center h-96">
-          {file ? "" : <VideoInput setFile={setFile} />}
+          {file ? <></> : <VideoInput handleUpload={handleUpload} />}
         </div>
       </div>
     </Modal>
