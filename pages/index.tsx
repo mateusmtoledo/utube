@@ -5,23 +5,7 @@ import Head from "next/head";
 import { faker } from "@faker-js/faker";
 import CategoryList from "@/components/CategoryList";
 import { VideoType } from "@/lib/types";
-
-function generateFillerVideo(id: number): VideoType {
-  faker.seed(id);
-  return {
-    id: id,
-    view_count: faker.datatype.number(),
-    title: faker.lorem.sentence(),
-    description: faker.lorem.sentence(),
-    date: faker.date.past(1).toDateString(),
-    thumbnail: "",
-    author: {
-      id: 1,
-      name: faker.name.fullName(),
-      image: faker.image.unsplash.buildings(64, 64),
-    },
-  };
-}
+import api from "@/adapters/axios";
 
 function generateCategories() {
   return new Array(12).fill(null).map((_, i) => {
@@ -60,11 +44,15 @@ export default function Home({ videos, categories }: HomeProps) {
   );
 }
 
-export async function getServerSideProps() {
+Home.getInitialProps = async () => {
+  const res = await api.get("/video");
+  const { videos } = res.data;
+
+  // TODO actual implementation of categories
+  const categories = generateCategories();
+
   return {
-    props: {
-      videos: new Array(20).fill(null).map((_, i) => generateFillerVideo(i)),
-      categories: generateCategories(),
-    },
+    videos,
+    categories,
   };
-}
+};

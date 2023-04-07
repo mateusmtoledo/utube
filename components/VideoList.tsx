@@ -1,20 +1,57 @@
 import { VideoType } from "@/lib/types";
 import Image from "next/image";
 
+export function getDateString(date: string) {
+  let dateNumber =
+    (new Date().getTime() - new Date(date).getTime()) / 31104000000;
+  const dateDistances = [12, 30, 24, 60, 60, 1000];
+  const dateNames = ["year", "month", "day", "hour", "minute", "second"];
+  for (let i = 0; i < dateDistances.length; i += 1) {
+    if (dateNumber >= 1 || i === dateDistances.length - 1) {
+      dateNumber = Math.floor(dateNumber);
+      return dateNumber === 1
+        ? `1 ${dateNames[i]} ago`
+        : `${Math.max(dateNumber, 0)} ${dateNames[i]}s ago`;
+    }
+    dateNumber *= dateDistances[i];
+  }
+}
+
+function secondsToFormattedDuration(seconds: number): string {
+  const numHours = Math.floor(seconds / 3600);
+  seconds -= numHours * 3600;
+  const numMinutes = Math.floor(seconds / 60);
+  seconds -= numMinutes * 60;
+  const numSeconds = Math.round(seconds);
+  return `${
+    numHours ? `${numHours}:${numMinutes.toString().padStart(2)}` : numMinutes
+  }:${numSeconds.toString().padStart(2, "0")}`;
+}
+
 type VideoProps = {
   video: VideoType;
 };
 
 function Video({ video }: VideoProps) {
-  const { title, date, view_count, author } = video;
-  const dateString = `${Math.floor(
-    (new Date().getTime() - new Date(date).getTime()) /
-      (1000 * 60 * 60 * 24 * 30)
-  )} months ago`;
+  const { title, date, view_count, author, thumbnail, duration } = video;
+  const dateString = getDateString(date);
 
   return (
     <li>
-      <div className="bg-slate-700 aspect-[9/5] w-full mb-4 rounded-xl"></div>
+      <div className="bg-slate-700 aspect-[9/5] w-full mb-4 rounded-xl overflow-hidden">
+        <div className="relative w-full h-full">
+          <Image
+            src={thumbnail}
+            alt=""
+            width={340}
+            height={180}
+            className="w-full h-full object-cover"
+          />
+          <p className="absolute bottom-1 right-1 text-xs font-medium bg-slate-950 bg-opacity-90 px-1 rounded">
+            {secondsToFormattedDuration(duration)}
+          </p>
+        </div>
+      </div>
       <div className="flex gap-3">
         <Image
           src={author.image}

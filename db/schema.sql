@@ -50,11 +50,12 @@ CREATE TABLE videos
 (
   id SERIAL,
   title VARCHAR(255) NOT NULL,
-  description VARCHAR(255),
+  description VARCHAR(255) NOT NULL DEFAULT '',
   thumbnail TEXT NOT NULL,
   author_id INTEGER NOT NULL,
   view_count INTEGER NOT NULL DEFAULT 0,
   date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  duration REAL NOT NULL,
 
   PRIMARY KEY (id),
   CONSTRAINT author
@@ -62,7 +63,7 @@ CREATE TABLE videos
       REFERENCES users(id)
 );
 
-CREATE TABLE video_transformations
+CREATE TABLE video_resolutions
 (
   id SERIAL,
   resolution VARCHAR(10) NOT NULL,

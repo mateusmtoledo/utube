@@ -1,10 +1,4 @@
-import {
-  ChangeEvent,
-  Dispatch,
-  HTMLInputTypeAttribute,
-  SetStateAction,
-  useState,
-} from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import Modal from "./Modal";
 import { BiVideoPlus } from "react-icons/bi";
 import { VscClose } from "react-icons/vsc";
@@ -81,6 +75,7 @@ function Input({
   function onChange(e: ChangeEvent<HTMLSpanElement>) {
     setValue(e.target.textContent || "");
   }
+  // FIXME this does not work because element does not fire onChange when edited
   return (
     <div
       className={`flex flex-col gap-1 rounded border px-3 py-2 ${

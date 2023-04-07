@@ -6,6 +6,7 @@ export type VideoType = {
   thumbnail: string;
   view_count: number;
   author: UserType;
+  duration: number;
 };
 
 export type UserType = {
