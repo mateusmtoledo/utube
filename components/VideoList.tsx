@@ -1,5 +1,7 @@
 import { VideoType } from "@/lib/types";
 import Image from "next/image";
+import Skeleton from "react-loading-skeleton";
+import useSWR from "swr";
 
 export function getDateString(date: string) {
   let dateNumber =
@@ -26,6 +28,31 @@ function secondsToFormattedDuration(seconds: number): string {
   return `${
     numHours ? `${numHours}:${numMinutes.toString().padStart(2)}` : numMinutes
   }:${numSeconds.toString().padStart(2, "0")}`;
+}
+
+function VideoSkeleton() {
+  return (
+    <li>
+      <div className="aspect-[9/5] w-full mb-4 rounded-xl overflow-hidden">
+        <div className="relative w-full h-full">
+          <Skeleton className="w-full h-full relative -top-1" />
+        </div>
+      </div>
+      <div className="flex gap-3">
+        <Skeleton circle width={36} height={36} />
+        <div>
+          <p className="font-medium text-base leading-tight mb-2 line-clamp-2 mr-6">
+            <Skeleton width={200} height={18} />
+          </p>
+          <div className="text-slate-400 text-sm">
+            <p>
+              <Skeleton width={150} />
+            </p>
+          </div>
+        </div>
+      </div>
+    </li>
+  );
 }
 
 type VideoProps = {
@@ -74,16 +101,15 @@ function Video({ video }: VideoProps) {
   );
 }
 
-type VideoListProps = {
-  videos: VideoType[];
-};
-
-export default function VideoList({ videos }: VideoListProps) {
+export default function VideoList() {
+  const { data, isLoading } = useSWR("/video");
   return (
     <ul className="flex-1 grid grid-cols-video-list gap-x-4 gap-y-8 max-w-[1500px] min-w-0 m-auto">
-      {videos.map((video) => (
-        <Video key={video.id} video={video} />
-      ))}
+      {isLoading
+        ? new Array(8).fill(null).map((_, i) => <VideoSkeleton key={i} />)
+        : data.videos.map((video: VideoType) => (
+            <Video key={video.id} video={video} />
+          ))}
     </ul>
   );
 }

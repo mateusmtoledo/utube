@@ -1,11 +1,9 @@
 import Header from "@/components/Header";
 import Nav from "@/components/Nav";
-import VideoList from "@/components/VideoList";
 import Head from "next/head";
 import { faker } from "@faker-js/faker";
+import VideoList from "@/components/VideoList";
 import CategoryList from "@/components/CategoryList";
-import { VideoType } from "@/lib/types";
-import api from "@/adapters/axios";
 
 function generateCategories() {
   return new Array(12).fill(null).map((_, i) => {
@@ -18,12 +16,9 @@ function generateCategories() {
   });
 }
 
-type HomeProps = {
-  videos: VideoType[];
-  categories: string[];
-};
+export default function Home() {
+  const categories = generateCategories();
 
-export default function Home({ videos, categories }: HomeProps) {
   return (
     <>
       <Head>
@@ -37,22 +32,9 @@ export default function Home({ videos, categories }: HomeProps) {
         <Nav />
         <div className="flex-1 space-y-4">
           <CategoryList categories={categories} />
-          <VideoList videos={videos} />
+          <VideoList />
         </div>
       </main>
     </>
   );
 }
-
-Home.getInitialProps = async () => {
-  const res = await api.get("/video");
-  const { videos } = res.data;
-
-  // TODO actual implementation of categories
-  const categories = generateCategories();
-
-  return {
-    videos,
-    categories,
-  };
-};
