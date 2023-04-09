@@ -62,7 +62,7 @@ export function SignInButton() {
     <>
       <button
         onClick={() => setSignInModalVisible(true)}
-        className="flex items-center gap-2 text-green-500 px-2 py-1 rounded-full border border-slate-700 text-sm font-medium hover:bg-green-950 hover:border-green-950"
+        className="flex items-center gap-2 w-max text-green-500 px-2 py-1 rounded-full border border-slate-700 text-sm font-medium hover:bg-green-950 hover:border-green-950"
       >
         <HiOutlineUserCircle size={24} className="stroke-1" />
         <p className="mr-2">Sign in</p>
@@ -100,7 +100,7 @@ function UserMenu() {
   return ReactDOM.createPortal(
     <div
       onClick={(e) => e.stopPropagation()}
-      className="absolute top-12 right-6 pb-2 bg-slate-800 rounded-lg font-normal text-sm"
+      className="absolute top-12 right-6 pb-2 bg-slate-800 rounded-lg font-normal text-sm z-20"
     >
       <div className="flex gap-4 min-w-0 p-4">
         <Image
@@ -132,13 +132,16 @@ export function UserMenuButton() {
 
   return (
     <>
-      <button onClick={() => setUserMenuVisible((prev) => !prev)}>
+      <button
+        className="flex-shrink-0"
+        onClick={() => setUserMenuVisible((prev) => !prev)}
+      >
         <Image
           src={session?.user?.image || ""}
           alt=""
           width={32}
           height={32}
-          className="rounded-full"
+          className="rounded-full w-8 h-8"
         />
         {userMenuVisible && <UserMenu />}
       </button>

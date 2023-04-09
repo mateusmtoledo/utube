@@ -78,7 +78,7 @@ function Input({
   // FIXME this does not work because element does not fire onChange when edited
   return (
     <div
-      className={`flex flex-col gap-1 rounded border px-3 py-2 ${
+      className={`flex flex-col w-full gap-1 rounded border px-3 py-2 ${
         isFocused ? "border-green-500" : "border-slate-700"
       }`}
     >
@@ -145,7 +145,7 @@ function VideoDetailsForm({
   return (
     <div className="px-12 py-8">
       <p className="text-2xl font-medium mb-4">Details</p>
-      <div className="flex gap-6">
+      <div className="flex flex-col-reverse items-stretch md:items-start md:flex-row gap-6">
         <div className="space-y-4 flex-1">
           <Input
             value={titleInput}
@@ -164,7 +164,7 @@ function VideoDetailsForm({
             size={4}
           />
         </div>
-        <div className="rounded overflow-hidden bg-slate-900 h-max">
+        <div className="rounded overflow-hidden self-center bg-slate-900 h-max">
           <div className="w-72 h-40 bg-slate-300" />
           <div className="p-4 text-sm text-slate-300">
             {videoURL ? (
@@ -203,7 +203,7 @@ function VideoUploadForm({ closeForm }: VideoUploadFormProps) {
 
   async function handleUpload(file: File) {
     setFile(file);
-    setTitleInput(file.name);
+    setTitleInput(file.name.replace(/\.[^/.]+$/, ""));
     const formData = new FormData();
     formData.append("file", file);
     formData.append("upload_preset", "s57kcdni");
@@ -229,7 +229,7 @@ function VideoUploadForm({ closeForm }: VideoUploadFormProps) {
     <Modal maxWidth={896}>
       <div className="flex flex-col bg-slate-800 border border-slate-700 rounded-md relative max-h-[816px] h-screen m-4">
         <div className="px-6 py-4 flex justify-between items-center">
-          <p className="font-medium text-xl">{file?.name || "Upload video"}</p>
+          <p className="font-medium text-xl">Upload video</p>
           <button onClick={closeForm}>
             <VscClose size={32} />
           </button>

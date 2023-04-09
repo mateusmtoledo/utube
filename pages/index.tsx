@@ -1,24 +1,9 @@
 import Header from "@/components/Header";
-import Nav from "@/components/Nav";
 import Head from "next/head";
-import { faker } from "@faker-js/faker";
 import VideoList from "@/components/VideoList";
-import CategoryList from "@/components/CategoryList";
-
-function generateCategories() {
-  return new Array(12).fill(null).map((_, i) => {
-    faker.seed(i);
-    const words = faker.lorem.words((i % 2) + 1);
-    return words
-      .split(" ")
-      .map((word) => word.slice(0, 1).toUpperCase() + word.slice(1))
-      .join(" ");
-  });
-}
+import Sidebar from "@/components/Sidebar";
 
 export default function Home() {
-  const categories = generateCategories();
-
   return (
     <>
       <Head>
@@ -29,9 +14,8 @@ export default function Home() {
       </Head>
       <Header />
       <main className="flex mt-3">
-        <Nav />
-        <div className="flex-1 space-y-4">
-          <CategoryList categories={categories} />
+        <Sidebar />
+        <div className="flex-1 min-w-0 p-4">
           <VideoList />
         </div>
       </main>

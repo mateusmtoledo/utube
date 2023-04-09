@@ -8,7 +8,7 @@ module.exports = {
   theme: {
     extend: {
       gridTemplateColumns: {
-        "video-list": "repeat(auto-fill, minmax(320px, 1fr))",
+        "video-list": "repeat(auto-fill, minmax(300px, 1fr))",
       },
     },
   },
