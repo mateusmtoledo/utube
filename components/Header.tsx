@@ -2,6 +2,7 @@ import { CgMenu } from "react-icons/cg";
 import { BiSearch } from "react-icons/bi";
 import UserStatus from "./UserStatus";
 import Logo from "./Logo";
+import { ToggleSidebarButton } from "./Sidebar";
 
 function SearchBar() {
   return (
@@ -26,11 +27,26 @@ function SearchButton() {
   );
 }
 
-export default function Header() {
+type HeaderProps = {
+  toggleSidebar: () => void;
+  toggleSidebarModal: () => void;
+};
+
+export default function Header({
+  toggleSidebar,
+  toggleSidebarModal,
+}: HeaderProps) {
+  function handleToggleSidebar() {
+    if (window.innerWidth < 768) {
+      toggleSidebarModal();
+    } else {
+      toggleSidebar();
+    }
+  }
   return (
     <header className="flex justify-between w-full px-6 py-2 gap-6 sticky top-0 bg-slate-950 z-10">
       <div className="flex flex-grow items-center gap-6">
-        <CgMenu size={24} />
+        <ToggleSidebarButton toggleSidebar={handleToggleSidebar} />
         <Logo />
       </div>
       <div className="hidden md:flex flex-[1_1_512px] max-w-lg min-w-0">
