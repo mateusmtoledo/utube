@@ -1,5 +1,6 @@
 import { VideoType } from "@/lib/types";
 import Image from "next/image";
+import Link from "next/link";
 import Skeleton from "react-loading-skeleton";
 import useSWR from "swr";
 
@@ -60,43 +61,45 @@ type VideoProps = {
 };
 
 function Video({ video }: VideoProps) {
-  const { title, date, view_count, author, thumbnail, duration } = video;
+  const { id, title, date, view_count, author, thumbnail, duration } = video;
   const dateString = getDateString(date);
 
   return (
     <li>
-      <div className="bg-slate-700 aspect-[9/5] w-full mb-4 rounded-xl overflow-hidden">
-        <div className="relative w-full h-full">
-          <Image
-            src={thumbnail}
-            alt=""
-            width={340}
-            height={180}
-            className="w-full h-full object-cover"
-          />
-          <p className="absolute bottom-1 right-1 text-xs font-medium bg-slate-950 bg-opacity-90 px-1 rounded">
-            {secondsToFormattedDuration(duration)}
-          </p>
-        </div>
-      </div>
-      <div className="flex gap-3">
-        <Image
-          src={author.image}
-          alt=""
-          width={36}
-          height={36}
-          className="aspect-square w-9 h-9 rounded-full"
-        />
-        <div>
-          <p className="font-medium text-base leading-tight mb-2 line-clamp-2 mr-6">
-            {title}
-          </p>
-          <div className="text-slate-400 text-sm">
-            <p>{author.name}</p>
-            <p>{`${view_count} views · ${dateString}`}</p>
+      <Link href={`/video/${id}`}>
+        <div className="bg-slate-700 aspect-[9/5] w-full mb-4 rounded-xl overflow-hidden">
+          <div className="relative w-full h-full">
+            <Image
+              src={thumbnail}
+              alt=""
+              width={340}
+              height={180}
+              className="w-full h-full object-cover"
+            />
+            <p className="absolute bottom-1 right-1 text-xs font-medium bg-slate-950 bg-opacity-90 px-1 rounded">
+              {secondsToFormattedDuration(duration)}
+            </p>
           </div>
         </div>
-      </div>
+        <div className="flex gap-3">
+          <Image
+            src={author.image}
+            alt=""
+            width={36}
+            height={36}
+            className="aspect-square w-9 h-9 rounded-full"
+          />
+          <div>
+            <p className="font-medium text-base leading-tight mb-2 line-clamp-2 mr-6">
+              {title}
+            </p>
+            <div className="text-slate-400 text-sm">
+              <p>{author.name}</p>
+              <p>{`${view_count} views · ${dateString}`}</p>
+            </div>
+          </div>
+        </div>
+      </Link>
     </li>
   );
 }

@@ -5,6 +5,7 @@ import { VscClose } from "react-icons/vsc";
 import { MdFileUpload } from "react-icons/md";
 import api from "@/adapters/axios";
 import axios from "axios";
+import ProgressBar from "./ProgressBar";
 
 export function VideoUploadButton() {
   const [formVisible, setFormVisible] = useState(false);
@@ -101,28 +102,6 @@ function Input({
       >
         {value}
       </span>
-    </div>
-  );
-}
-
-type ProgressBarProps = {
-  value: number;
-  max: number;
-  fillColor?: string;
-  className?: string;
-};
-
-function ProgressBar({ value, max, fillColor, className }: ProgressBarProps) {
-  return (
-    <div className={`relative overflow-hidden ${className}`}>
-      <div
-        className={`absolute h-full left-0 ${
-          fillColor ? fillColor : "bg-green-500"
-        }`}
-        style={{
-          width: (value / max) * 100 + "%",
-        }}
-      ></div>
     </div>
   );
 }

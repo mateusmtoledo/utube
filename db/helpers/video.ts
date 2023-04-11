@@ -1,4 +1,4 @@
-import { UserType, VideoType } from "@/lib/types";
+import { VideoType } from "@/lib/types";
 import { pool } from "..";
 import transformationPresets from "@/lib/transformationPresets.json";
 import cloudinary from "@/adapters/cloudinary";
@@ -72,5 +72,22 @@ export async function insertVideo(public_id: string, authorId: number) {
       ...video,
       resolutions: newResolutions.rows,
     },
+  };
+}
+
+export async function getVideo(videoId: number) {
+  const { rows } = await pool.query(
+    `
+    SELECT v.id, v.title, v.description, v.thumbnail, v.author_id, v.view_count, v.date, v.duration, 
+    ARRAY_AGG(json_build_object('id', vr.id, 'resolution', vr.resolution, 'url', vr.url)) AS resolutions
+    FROM videos v
+    INNER JOIN video_resolutions vr ON v.id = vr.video_id
+    WHERE v.id = $1
+    GROUP BY v.id;
+  `,
+    [videoId]
+  );
+  return {
+    video: rows[0],
   };
 }

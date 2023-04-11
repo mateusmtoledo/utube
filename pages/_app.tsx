@@ -5,11 +5,19 @@ import { SessionProvider } from "next-auth/react";
 import { SkeletonTheme } from "react-loading-skeleton";
 import { SWRConfig } from "swr";
 import api from "@/adapters/axios";
+import { useState } from "react";
+import SidebarModalContext from "@/contexts/SidebarModalContext";
+import { SidebarModal } from "@/components/Sidebar";
 
 export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }: AppProps) {
+  const [sidebarModalVisible, setSidebarModalVisible] = useState(false);
+  function toggleSidebarModal() {
+    setSidebarModalVisible((prev) => !prev);
+  }
+
   return (
     <SWRConfig
       value={{
@@ -18,7 +26,12 @@ export default function App({
     >
       <SessionProvider session={session}>
         <SkeletonTheme baseColor="#334155" highlightColor="#475569">
-          <Component {...pageProps} />
+          <SidebarModalContext.Provider value={{ toggleSidebarModal }}>
+            <Component {...pageProps} />
+            {sidebarModalVisible && (
+              <SidebarModal toggleSidebarModal={toggleSidebarModal} />
+            )}
+          </SidebarModalContext.Provider>
         </SkeletonTheme>
       </SessionProvider>
     </SWRConfig>

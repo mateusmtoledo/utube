@@ -28,21 +28,10 @@ function SearchButton() {
 }
 
 type HeaderProps = {
-  toggleSidebar: () => void;
-  toggleSidebarModal: () => void;
+  handleToggleSidebar: () => void;
 };
 
-export default function Header({
-  toggleSidebar,
-  toggleSidebarModal,
-}: HeaderProps) {
-  function handleToggleSidebar() {
-    if (window.innerWidth < 768) {
-      toggleSidebarModal();
-    } else {
-      toggleSidebar();
-    }
-  }
+export default function Header({ handleToggleSidebar }: HeaderProps) {
   return (
     <header className="flex justify-between w-full px-6 py-2 gap-6 sticky top-0 bg-slate-950 z-10">
       <div className="flex flex-grow items-center gap-6">
