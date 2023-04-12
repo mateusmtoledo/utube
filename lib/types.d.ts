@@ -1,8 +1,3 @@
-export type VideoResolution = {
-  resolution: string;
-  url: string;
-};
-
 export type VideoType = {
   id: number;
   title: string;
@@ -12,7 +7,9 @@ export type VideoType = {
   view_count: number;
   author: UserType;
   duration: number;
-  resolutions: VideoResolution[];
+  width: number;
+  height: number;
+  source_url: string;
 };
 
 export type UserType = {

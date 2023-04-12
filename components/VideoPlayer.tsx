@@ -2,11 +2,10 @@ import { useCallback, useRef, useState } from "react";
 import { BsFillPauseFill, BsFillPlayFill } from "react-icons/bs";
 import ProgressBar from "./ProgressBar";
 import { BiFullscreen } from "react-icons/bi";
-import { VideoResolution } from "@/lib/types";
+import { VideoType } from "@/lib/types";
 
 type VideoControlsProps = {
   isPaused: boolean;
-  isFullScreen: boolean;
   videoTime: number;
   videoDuration: number;
   togglePause: () => void;
@@ -15,7 +14,6 @@ type VideoControlsProps = {
 
 function VideoControls({
   isPaused,
-  isFullScreen,
   videoTime,
   videoDuration,
   togglePause,
@@ -52,15 +50,13 @@ function VideoControls({
 }
 
 type VideoPlayerProps = {
-  resolutions: VideoResolution[];
+  video: VideoType;
 };
 
-export default function VideoPlayer({ resolutions }: VideoPlayerProps) {
-  const [activeResolution, setActiveResolution] = useState(resolutions[0]);
+export default function VideoPlayer({ video }: VideoPlayerProps) {
   const [videoTime, setVideoTime] = useState(0);
   const [videoDuration, setVideoDuration] = useState(0);
   const [isPaused, setIsPaused] = useState(true);
-  const [isFullScreen, setIsFullScreen] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const videoCallback = useCallback((video: HTMLVideoElement) => {
@@ -90,9 +86,6 @@ export default function VideoPlayer({ resolutions }: VideoPlayerProps) {
   }
 
   function toggleFullScreen() {
-    setIsFullScreen((prev) => {
-      return !prev;
-    });
     videoRef.current?.requestFullscreen();
   }
 
@@ -104,11 +97,10 @@ export default function VideoPlayer({ resolutions }: VideoPlayerProps) {
         height={696}
         onClick={togglePause}
       >
-        <source src={activeResolution.url} type="video/mp4" />
+        <source src={video.source_url} type="video/mp4" />
       </video>
       <VideoControls
         isPaused={isPaused}
-        isFullScreen={isFullScreen}
         togglePause={togglePause}
         videoTime={videoTime}
         videoDuration={videoDuration}

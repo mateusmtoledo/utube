@@ -199,7 +199,6 @@ function VideoUploadForm({ closeForm }: VideoUploadFormProps) {
     const uploadData = uploadResponse.data;
     await api.post("/video", {
       public_id: uploadData.public_id,
-      originalName: file.name,
     });
     setVideoURL("http://video.url");
   }

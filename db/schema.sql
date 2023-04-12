@@ -56,22 +56,12 @@ CREATE TABLE videos
   view_count INTEGER NOT NULL DEFAULT 0,
   date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   duration REAL NOT NULL,
+  source_url TEXT NOT NULL,
+  width INTEGER NOT NULL,
+  height INTEGER NOT NULL,
 
   PRIMARY KEY (id),
   CONSTRAINT author
     FOREIGN KEY (author_id)
       REFERENCES users(id)
-);
-
-CREATE TABLE video_resolutions
-(
-  id SERIAL,
-  resolution VARCHAR(10) NOT NULL,
-  url TEXT NOT NULL,
-  video_id INTEGER NOT NULL,
-
-  PRIMARY KEY (id),
-  CONSTRAINT video
-    FOREIGN KEY (video_id)
-      REFERENCES videos(id)
 );

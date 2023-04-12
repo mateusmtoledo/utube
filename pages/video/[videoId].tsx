@@ -1,7 +1,7 @@
-import api from "@/adapters/axios";
 import Header from "@/components/Header";
 import VideoPlayer from "@/components/VideoPlayer";
 import SidebarModalContext from "@/contexts/SidebarModalContext";
+import { getVideo } from "@/db/helpers/video";
 import { VideoType } from "@/lib/types";
 import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
@@ -13,7 +13,8 @@ type Params = {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { videoId } = context.params as Params;
-  const { video } = (await api.get(`/video/${videoId}`)).data;
+  const video = await getVideo(Number(videoId));
+  video.date = new Date(video.date).toISOString();
   return {
     props: {
       video,
@@ -34,7 +35,7 @@ export default function VideoPage({ video }: VideoPageProps) {
       </Head>
       <Header handleToggleSidebar={toggleSidebarModal} />
       <div className="flex justify-center p-8">
-        <VideoPlayer resolutions={video.resolutions} />
+        <VideoPlayer video={video} />
       </div>
     </>
   );
