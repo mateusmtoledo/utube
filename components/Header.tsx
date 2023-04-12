@@ -34,14 +34,14 @@ type HeaderProps = {
 export default function Header({ handleToggleSidebar }: HeaderProps) {
   return (
     <header className="flex justify-between w-full px-6 py-2 gap-6 sticky top-0 bg-slate-950 z-10">
-      <div className="flex flex-grow items-center gap-6">
+      <div className="flex flex-1 max-w-[150px] items-center gap-6">
         <ToggleSidebarButton toggleSidebar={handleToggleSidebar} />
         <Logo />
       </div>
-      <div className="hidden md:flex flex-[1_1_512px] max-w-lg min-w-0">
+      <div className="hidden md:flex flex-shrink w-[420px] lg:w-[512px]">
         <SearchBar />
       </div>
-      <div className="flex flex-grow gap-2 justify-end items-center">
+      <div className="flex gap-2 flex-1 max-w-[150px] justify-end items-center">
         <div className="flex items-center md:hidden">
           <SearchButton />
         </div>
