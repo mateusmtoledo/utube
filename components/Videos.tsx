@@ -21,8 +21,8 @@ type VideoThumbnailProps = {
 
 export function VideoThumbnail({
   thumbnailUrl,
-  width = 340,
-  height = 180,
+  width,
+  height,
   videoDuration,
 }: VideoThumbnailProps) {
   return (
@@ -30,9 +30,10 @@ export function VideoThumbnail({
       <Image
         src={thumbnailUrl}
         alt=""
-        width={width}
-        height={height}
-        className="w-full h-full object-cover"
+        width={width || 340}
+        height={height || 180}
+        className="object-cover"
+        style={{ width: width || "100%", height: height || "100%" }}
       />
       <p className="absolute bottom-1 right-1 text-xs font-medium bg-slate-950 bg-opacity-90 px-1 rounded">
         {secondsToFormattedDuration(videoDuration)}
@@ -46,14 +47,15 @@ type AuthorAvatarProps = {
   size?: number;
 };
 
-export function AuthorAvatar({ avatarUrl }: AuthorAvatarProps) {
+export function AuthorAvatar({ avatarUrl, size = 36 }: AuthorAvatarProps) {
   return (
     <Image
       src={avatarUrl}
       alt=""
-      width={36}
-      height={36}
-      className={`rounded-full h-9 w-9`}
+      width={size}
+      height={size}
+      className={`rounded-full`}
+      style={{ width: size, height: size }}
     />
   );
 }

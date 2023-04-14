@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { BsFillPauseFill, BsFillPlayFill } from "react-icons/bs";
 import ProgressBar from "./ProgressBar";
 import { BiFullscreen } from "react-icons/bi";
@@ -72,6 +72,11 @@ export default function VideoPlayer({ video }: VideoPlayerProps) {
       setIsPaused(true);
     });
   }, []);
+
+  useEffect(() => {
+    if (videoRef.current) videoRef.current.load();
+    setIsPaused(true);
+  }, [video]);
 
   function togglePause() {
     setIsPaused((prev) => {
