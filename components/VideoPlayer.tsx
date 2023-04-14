@@ -1,33 +1,55 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { BsFillPauseFill, BsFillPlayFill } from "react-icons/bs";
-import ProgressBar from "./ProgressBar";
 import { BiFullscreen } from "react-icons/bi";
 import { VideoType } from "@/lib/types";
 
-type VideoControlsProps = {
-  isPaused: boolean;
-  videoTime: number;
-  videoDuration: number;
-  togglePause: () => void;
-  toggleFullScreen: () => void;
-};
+function VideoProgressBar() {
+  const [hovered, setHovered] = useState(false);
+  const { videoTime, videoDuration, skipToTime } =
+    useContext(VideoPlayerContext);
 
-function VideoControls({
-  isPaused,
-  videoTime,
-  videoDuration,
-  togglePause,
-  toggleFullScreen,
-}: VideoControlsProps) {
+  function onClickSkip(e: React.MouseEvent) {
+    const { width, left } = e.currentTarget.getBoundingClientRect();
+    skipToTime(((e.clientX - left) / width) * videoDuration);
+  }
+
+  return (
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className="flex items-end h-6 cursor-pointer"
+      onClick={onClickSkip}
+    >
+      <div
+        className={`flex-1 relative overflow-hidden bg-slate-50 ${
+          hovered ? "bg-opacity-60 h-2" : "bg-opacity-30 h-1"
+        }`}
+      >
+        <div
+          className="absolute h-full w-full left-0 bg-green-400"
+          style={{
+            transform: `scaleX(${(videoTime / videoDuration) * 100}%)`,
+            transformOrigin: "left",
+          }}
+        ></div>
+      </div>
+    </div>
+  );
+}
+
+function VideoControls() {
+  const { isPaused, togglePause } = useContext(VideoPlayerContext);
   return (
     <div className="absolute bottom-0 w-full p-2">
       <div className="w-full px-1 mb-2">
-        <ProgressBar
-          max={videoDuration}
-          value={videoTime}
-          fillColor="bg-green-400"
-          className="h-1 bg-slate-50 bg-opacity-30"
-        />
+        <VideoProgressBar />
       </div>
       <div className="flex justify-between px-3 py-1">
         <div className="flex items-center">
@@ -40,7 +62,7 @@ function VideoControls({
           </button>
         </div>
         <div className="flex items-center">
-          <button onClick={toggleFullScreen}>
+          <button>
             <BiFullscreen size={24} />
           </button>
         </div>
@@ -48,6 +70,15 @@ function VideoControls({
     </div>
   );
 }
+
+const VideoPlayerContext = createContext({
+  isPaused: false,
+  videoTime: 0,
+  videoDuration: 0,
+  togglePause: () => {},
+  toggleFullScreen: () => {},
+  skipToTime: (time: number) => {},
+});
 
 type VideoPlayerProps = {
   video: VideoType;
@@ -94,23 +125,33 @@ export default function VideoPlayer({ video }: VideoPlayerProps) {
     videoRef.current?.requestFullscreen();
   }
 
+  function skipToTime(time: number) {
+    if (!videoRef.current) return;
+    videoRef.current.currentTime = time;
+  }
+
   return (
-    <div className="relative w-max">
-      <video
-        ref={videoCallback}
-        width={1237}
-        height={696}
-        onClick={togglePause}
-      >
-        <source src={video.source_url} type="video/mp4" />
-      </video>
-      <VideoControls
-        isPaused={isPaused}
-        togglePause={togglePause}
-        videoTime={videoTime}
-        videoDuration={videoDuration}
-        toggleFullScreen={toggleFullScreen}
-      />
-    </div>
+    <VideoPlayerContext.Provider
+      value={{
+        isPaused,
+        videoDuration,
+        videoTime,
+        skipToTime,
+        toggleFullScreen,
+        togglePause,
+      }}
+    >
+      <div className="relative w-max">
+        <video
+          ref={videoCallback}
+          width={1237}
+          height={696}
+          onClick={togglePause}
+        >
+          <source src={video.source_url} type="video/mp4" />
+        </video>
+        <VideoControls />
+      </div>
+    </VideoPlayerContext.Provider>
   );
 }
