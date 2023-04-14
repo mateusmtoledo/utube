@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import VideoPlayer from "@/components/VideoPlayer";
+import RecommendedVideoList from "@/components/RecommendedVideoList";
 import SidebarModalContext from "@/contexts/SidebarModalContext";
 import { getVideo } from "@/db/helpers/video";
 import { VideoType } from "@/lib/types";
@@ -34,8 +35,9 @@ export default function VideoPage({ video }: VideoPageProps) {
         <title>{`${video.title} - UTube`}</title>
       </Head>
       <Header handleToggleSidebar={toggleSidebarModal} />
-      <div className="flex justify-center p-8">
+      <div className="flex justify-center p-8 gap-6">
         <VideoPlayer video={video} />
+        <RecommendedVideoList />
       </div>
     </>
   );

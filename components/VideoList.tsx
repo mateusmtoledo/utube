@@ -1,8 +1,17 @@
+import getVideoUrl from "@/helpers/getVideoUrl";
+import useVideos from "@/hooks/useVideos";
 import { VideoType } from "@/lib/types";
 import Image from "next/image";
 import Link from "next/link";
 import Skeleton from "react-loading-skeleton";
 import useSWR from "swr";
+import {
+  AuthorAvatar,
+  AuthorName,
+  VideoDetails,
+  VideoThumbnail,
+  VideoTitle,
+} from "./Videos";
 
 export function getDateString(date: string) {
   let dateNumber =
@@ -18,17 +27,6 @@ export function getDateString(date: string) {
     }
     dateNumber *= dateDistances[i];
   }
-}
-
-function secondsToFormattedDuration(seconds: number): string {
-  const numHours = Math.floor(seconds / 3600);
-  seconds -= numHours * 3600;
-  const numMinutes = Math.floor(seconds / 60);
-  seconds -= numMinutes * 60;
-  const numSeconds = Math.round(seconds);
-  return `${
-    numHours ? `${numHours}:${numMinutes.toString().padStart(2)}` : numMinutes
-  }:${numSeconds.toString().padStart(2, "0")}`;
 }
 
 function VideoSkeleton() {
@@ -62,41 +60,17 @@ type VideoProps = {
 
 function Video({ video }: VideoProps) {
   const { id, title, date, view_count, author, thumbnail, duration } = video;
-  const dateString = getDateString(date);
 
   return (
     <li>
-      <Link href={`/video/${id}`}>
-        <div className="bg-slate-700 aspect-[9/5] w-full mb-4 rounded-xl overflow-hidden">
-          <div className="relative w-full h-full">
-            <Image
-              src={thumbnail}
-              alt=""
-              width={340}
-              height={180}
-              className="w-full h-full object-cover"
-            />
-            <p className="absolute bottom-1 right-1 text-xs font-medium bg-slate-950 bg-opacity-90 px-1 rounded">
-              {secondsToFormattedDuration(duration)}
-            </p>
-          </div>
-        </div>
+      <Link href={getVideoUrl(id)} className="space-y-3">
+        <VideoThumbnail thumbnailUrl={thumbnail} videoDuration={duration} />
         <div className="flex gap-3">
-          <Image
-            src={author.image}
-            alt=""
-            width={36}
-            height={36}
-            className="aspect-square w-9 h-9 rounded-full"
-          />
+          <AuthorAvatar avatarUrl={author.image} />
           <div>
-            <p className="font-medium text-base leading-tight mb-2 line-clamp-2 mr-6">
-              {title}
-            </p>
-            <div className="text-slate-400 text-sm">
-              <p>{author.name}</p>
-              <p>{`${view_count} views · ${dateString}`}</p>
-            </div>
+            <VideoTitle videoTitle={title} />
+            <AuthorName authorName={author.name} />
+            <VideoDetails viewCount={view_count} date={date} />
           </div>
         </div>
       </Link>
@@ -105,10 +79,10 @@ function Video({ video }: VideoProps) {
 }
 
 export default function VideoList() {
-  const { data, isLoading } = useSWR("/video");
+  const { data, isLoading } = useVideos();
   return (
     <ul className="grid justify-center m-auto grid-cols-video-list gap-x-4 gap-y-8 max-w-[1500px] min-w-0">
-      {isLoading
+      {isLoading || !data
         ? new Array(8).fill(null).map((_, i) => <VideoSkeleton key={i} />)
         : data.videos.map((video: VideoType) => (
             <Video key={video.id} video={video} />
