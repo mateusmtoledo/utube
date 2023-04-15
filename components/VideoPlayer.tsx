@@ -10,6 +10,7 @@ import { BsFillPauseFill, BsFillPlayFill } from "react-icons/bs";
 import { VideoType } from "@/lib/types";
 import { secondsToFormattedDuration } from "./Videos";
 import { RxEnterFullScreen, RxExitFullScreen } from "react-icons/rx";
+import { IoMdVolumeHigh, IoMdVolumeLow, IoMdVolumeOff } from "react-icons/io";
 
 function VideoProgressBar() {
   const [hovered, setHovered] = useState(false);
@@ -71,6 +72,7 @@ function VideoControls() {
               <BsFillPauseFill size={32} />
             )}
           </button>
+          <AudioControl />
           <p className="text-sm">{`${videoTimeString} / ${videoDurationString}`}</p>
         </div>
         <div className="flex items-center">
@@ -87,6 +89,38 @@ function VideoControls() {
   );
 }
 
+function AudioControl() {
+  const { volume, muted, setVolume, toggleMuted } =
+    useContext(VideoPlayerContext);
+  const [hovered, setHovered] = useState(false);
+  let icon;
+  if (muted || volume === 0) icon = <IoMdVolumeOff size={24} />;
+  else if (volume <= 0.5) icon = <IoMdVolumeLow size={24} />;
+  else icon = <IoMdVolumeHigh size={24} />;
+  return (
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className="flex items-center gap-2"
+    >
+      <button onClick={toggleMuted}>{icon}</button>
+      <input
+        type="range"
+        className="w-12 h-1 appearance-none cursor-pointer volume-control"
+        value={muted ? 0 : volume * 100}
+        onChange={(e) => setVolume(Number(e.currentTarget.value) / 100)}
+        style={{
+          width: hovered ? "64px" : "0",
+          opacity: hovered ? 1 : 0,
+          transition: "width 0.1s ease-in-out",
+        }}
+        min={0}
+        max={100}
+      />
+    </div>
+  );
+}
+
 const VideoPlayerContext = createContext({
   isPaused: false,
   videoTime: 0,
@@ -95,6 +129,10 @@ const VideoPlayerContext = createContext({
   toggleFullScreen: () => {},
   skipToTime: (time: number) => {},
   isFullScreen: false,
+  volume: 1,
+  setVolume: (value: number) => {},
+  muted: false,
+  toggleMuted: () => {},
 });
 
 type VideoPlayerProps = {
@@ -106,6 +144,8 @@ export default function VideoPlayer({ video }: VideoPlayerProps) {
   const [videoDuration, setVideoDuration] = useState(0);
   const [isPaused, setIsPaused] = useState(true);
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [volume, setVolume] = useState(1);
+  const [muted, setMuted] = useState(false);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -148,13 +188,15 @@ export default function VideoPlayer({ video }: VideoPlayerProps) {
   }
 
   function toggleFullScreen() {
-    if (isFullScreen) {
-      document.exitFullscreen();
-      setIsFullScreen(false);
-    } else {
-      containerRef.current?.requestFullscreen();
-      setIsFullScreen(true);
-    }
+    setIsFullScreen((prev) => {
+      if (prev) {
+        document.exitFullscreen();
+        return false;
+      } else {
+        containerRef.current?.requestFullscreen();
+        return true;
+      }
+    });
   }
 
   function skipToTime(time: number) {
@@ -172,9 +214,25 @@ export default function VideoPlayer({ video }: VideoPlayerProps) {
         toggleFullScreen,
         togglePause,
         isFullScreen,
+        volume,
+        muted,
+        setVolume: (value: number) => {
+          if (!videoRef.current) return;
+          setVolume(value);
+          videoRef.current.volume = value;
+          setMuted(false);
+          videoRef.current.muted = false;
+        },
+        toggleMuted: () => {
+          setMuted((prev) => {
+            if (!videoRef.current) throw new Error("Video ref not found");
+            videoRef.current.muted = !prev;
+            return !prev;
+          });
+        },
       }}
     >
-      <div ref={containerRef} className="relative max-w-7xl max-h-[720px]">
+      <div ref={containerRef} className="relative">
         <video
           ref={videoCallback}
           onClick={togglePause}

@@ -40,7 +40,7 @@ export default function VideoPage({ video }: VideoPageProps) {
       </Head>
       <Header handleToggleSidebar={toggleSidebarModal} />
       <div className="flex justify-center p-8 gap-6">
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-1 max-w-6xl flex-col gap-2">
           <VideoPlayer video={video} />
           <h2 className="text-xl font-semibold">{title}</h2>
           <div className="flex justify-between items-center">
