@@ -1,12 +1,12 @@
 import Image from "next/image";
 import { getDateString } from "./VideoList";
 
-function secondsToFormattedDuration(seconds: number): string {
+export function secondsToFormattedDuration(seconds: number): string {
   const numHours = Math.floor(seconds / 3600);
   seconds -= numHours * 3600;
   const numMinutes = Math.floor(seconds / 60);
   seconds -= numMinutes * 60;
-  const numSeconds = Math.round(seconds);
+  const numSeconds = Math.floor(seconds);
   return `${
     numHours ? `${numHours}:${numMinutes.toString().padStart(2)}` : numMinutes
   }:${numSeconds.toString().padStart(2, "0")}`;

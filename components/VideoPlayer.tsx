@@ -9,6 +9,7 @@ import React, {
 import { BsFillPauseFill, BsFillPlayFill } from "react-icons/bs";
 import { BiFullscreen } from "react-icons/bi";
 import { VideoType } from "@/lib/types";
+import { secondsToFormattedDuration } from "./Videos";
 
 function VideoProgressBar() {
   const [hovered, setHovered] = useState(false);
@@ -45,14 +46,18 @@ function VideoProgressBar() {
 }
 
 function VideoControls() {
-  const { isPaused, togglePause } = useContext(VideoPlayerContext);
+  const { isPaused, togglePause, videoTime, videoDuration } =
+    useContext(VideoPlayerContext);
+  const videoTimeString = secondsToFormattedDuration(videoTime);
+  const videoDurationString = secondsToFormattedDuration(videoDuration);
+
   return (
     <div className="absolute bottom-0 w-full p-2">
       <div className="w-full px-1 mb-2">
         <VideoProgressBar />
       </div>
       <div className="flex justify-between px-3 py-1">
-        <div className="flex items-center">
+        <div className="flex items-center gap-4">
           <button onClick={togglePause}>
             {isPaused ? (
               <BsFillPlayFill size={32} />
@@ -60,6 +65,7 @@ function VideoControls() {
               <BsFillPauseFill size={32} />
             )}
           </button>
+          <p className="text-sm">{`${videoTimeString} / ${videoDurationString}`}</p>
         </div>
         <div className="flex items-center">
           <button>
@@ -93,15 +99,21 @@ export default function VideoPlayer({ video }: VideoPlayerProps) {
   const videoCallback = useCallback((video: HTMLVideoElement) => {
     videoRef.current = video;
     if (!video) return;
-    video.addEventListener("timeupdate", () => {
-      setVideoTime(video.currentTime);
-    });
     video.addEventListener("durationchange", () => {
       setVideoDuration(video.duration);
     });
     video.addEventListener("ended", () => {
       setIsPaused(true);
     });
+  }, []);
+
+  useEffect(() => {
+    const tick = setInterval(() => {
+      if (videoRef.current) setVideoTime(videoRef.current?.currentTime);
+    }, 10);
+    () => {
+      clearInterval(tick);
+    };
   }, []);
 
   useEffect(() => {
