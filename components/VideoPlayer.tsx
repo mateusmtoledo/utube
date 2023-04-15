@@ -7,9 +7,9 @@ import React, {
   useState,
 } from "react";
 import { BsFillPauseFill, BsFillPlayFill } from "react-icons/bs";
-import { BiFullscreen } from "react-icons/bi";
 import { VideoType } from "@/lib/types";
 import { secondsToFormattedDuration } from "./Videos";
+import { RxEnterFullScreen, RxExitFullScreen } from "react-icons/rx";
 
 function VideoProgressBar() {
   const [hovered, setHovered] = useState(false);
@@ -46,8 +46,14 @@ function VideoProgressBar() {
 }
 
 function VideoControls() {
-  const { isPaused, togglePause, videoTime, videoDuration } =
-    useContext(VideoPlayerContext);
+  const {
+    isPaused,
+    togglePause,
+    isFullScreen,
+    toggleFullScreen,
+    videoTime,
+    videoDuration,
+  } = useContext(VideoPlayerContext);
   const videoTimeString = secondsToFormattedDuration(videoTime);
   const videoDurationString = secondsToFormattedDuration(videoDuration);
 
@@ -68,8 +74,12 @@ function VideoControls() {
           <p className="text-sm">{`${videoTimeString} / ${videoDurationString}`}</p>
         </div>
         <div className="flex items-center">
-          <button>
-            <BiFullscreen size={24} />
+          <button onClick={toggleFullScreen}>
+            {isFullScreen ? (
+              <RxExitFullScreen size={24} />
+            ) : (
+              <RxEnterFullScreen size={24} />
+            )}
           </button>
         </div>
       </div>
@@ -84,6 +94,7 @@ const VideoPlayerContext = createContext({
   togglePause: () => {},
   toggleFullScreen: () => {},
   skipToTime: (time: number) => {},
+  isFullScreen: false,
 });
 
 type VideoPlayerProps = {
@@ -94,6 +105,9 @@ export default function VideoPlayer({ video }: VideoPlayerProps) {
   const [videoTime, setVideoTime] = useState(0);
   const [videoDuration, setVideoDuration] = useState(0);
   const [isPaused, setIsPaused] = useState(true);
+  const [isFullScreen, setIsFullScreen] = useState(false);
+
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const videoCallback = useCallback((video: HTMLVideoElement) => {
@@ -134,7 +148,13 @@ export default function VideoPlayer({ video }: VideoPlayerProps) {
   }
 
   function toggleFullScreen() {
-    videoRef.current?.requestFullscreen();
+    if (isFullScreen) {
+      document.exitFullscreen();
+      setIsFullScreen(false);
+    } else {
+      containerRef.current?.requestFullscreen();
+      setIsFullScreen(true);
+    }
   }
 
   function skipToTime(time: number) {
@@ -151,14 +171,14 @@ export default function VideoPlayer({ video }: VideoPlayerProps) {
         skipToTime,
         toggleFullScreen,
         togglePause,
+        isFullScreen,
       }}
     >
-      <div className="relative w-max">
+      <div ref={containerRef} className="relative max-w-7xl max-h-[720px]">
         <video
           ref={videoCallback}
-          width={1237}
-          height={696}
           onClick={togglePause}
+          className="h-full w-full"
         >
           <source src={video.source_url} type="video/mp4" />
         </video>
