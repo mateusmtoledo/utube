@@ -1,4 +1,4 @@
-import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react";
 import Modal from "./Modal";
 import { BiVideoPlus } from "react-icons/bi";
 import { VscClose } from "react-icons/vsc";
@@ -69,14 +69,20 @@ function Input({
   required,
   value,
   setValue,
-  size,
+  size = 1,
   placeholder,
 }: InputProps) {
   const [isFocused, setIsFocused] = useState(false);
-  function onChange(e: ChangeEvent<HTMLSpanElement>) {
-    setValue(e.target.textContent || "");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  function onChange(e: ChangeEvent<HTMLTextAreaElement>) {
+    setValue(e.target.value);
+    updateHeight();
   }
-  // FIXME this does not work because element does not fire onChange when edited
+  function updateHeight() {
+    if (!textareaRef.current) throw new Error("Ref not found");
+    textareaRef.current.style.height = "auto";
+    textareaRef.current.style.height = textareaRef.current.scrollHeight + "px";
+  }
   return (
     <div
       className={`flex flex-col w-full gap-1 rounded border px-3 py-2 ${
@@ -86,22 +92,16 @@ function Input({
       <label className="text-xs text-slate-400" htmlFor={fieldName}>
         {`${label}${required ? " (required)" : ""}`}
       </label>
-      <span
-        role="textbox"
-        contentEditable
+      <textarea
         onChange={onChange}
         id={fieldName}
-        className="bg-transparent outline-none placeholder:text-slate-500"
+        className="bg-transparent outline-none placeholder:text-slate-500 resize-none overflow-hidden"
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         placeholder={placeholder}
-        style={{
-          minHeight: size && size * 1.4 + "rem",
-          overflowWrap: "anywhere",
-        }}
-      >
-        {value}
-      </span>
+        rows={size}
+        ref={textareaRef}
+      />
     </div>
   );
 }
@@ -124,7 +124,7 @@ function VideoDetailsForm({
   return (
     <div className="px-12 py-8">
       <p className="text-2xl font-medium mb-4">Details</p>
-      <div className="flex flex-col-reverse items-stretch md:items-start md:flex-row gap-6">
+      <div className="flex flex-col items-stretch md:items-start md:flex-row gap-6">
         <div className="space-y-4 flex-1">
           <Input
             value={titleInput}
@@ -137,13 +137,13 @@ function VideoDetailsForm({
           <Input
             value={descriptionInput}
             setValue={setDescriptionInput}
-            fieldName="vide-description"
+            fieldName="video-description"
             label="Description"
             placeholder="Tell viewers about your video"
             size={4}
           />
         </div>
-        <div className="rounded overflow-hidden self-center bg-slate-900 h-max">
+        <div className="rounded overflow-hidden self-center md:self-start order-first md:order-none bg-slate-900 h-max">
           <div className="w-72 h-40 bg-slate-300" />
           <div className="p-4 text-sm text-slate-300">
             {videoURL ? (
