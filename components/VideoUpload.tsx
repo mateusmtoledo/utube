@@ -6,6 +6,9 @@ import { MdFileUpload } from "react-icons/md";
 import api from "@/adapters/axios";
 import axios from "axios";
 import ProgressBar from "./ProgressBar";
+import Link from "next/link";
+import { VideoType } from "@/lib/types";
+import Image from "next/image";
 
 export function VideoUploadButton() {
   const [formVisible, setFormVisible] = useState(false);
@@ -110,17 +113,17 @@ type VideoDetailsFormProps = {
   titleInput: string;
   setTitleInput: Dispatch<SetStateAction<string>>;
   uploadProgress: number;
-  videoURL: string | null;
+  video: VideoType | null;
 };
 
 function VideoDetailsForm({
   titleInput,
   setTitleInput,
   uploadProgress,
-  videoURL,
+  video,
 }: VideoDetailsFormProps) {
   const [descriptionInput, setDescriptionInput] = useState("");
-
+  const videoURL = video ? `${window.location.origin}/video/${video.id}` : "";
   return (
     <div className="px-12 py-8">
       <p className="text-2xl font-medium mb-4">Details</p>
@@ -144,14 +147,16 @@ function VideoDetailsForm({
           />
         </div>
         <div className="rounded overflow-hidden self-center md:self-start order-first md:order-none bg-slate-900 h-max">
-          <div className="w-72 h-40 bg-slate-300" />
+          <div className="relative w-72 h-40 bg-slate-300">
+            {video ? <Image src={video?.thumbnail} alt="" fill /> : null}
+          </div>
           <div className="p-4 text-sm text-slate-300">
-            {videoURL ? (
+            {video ? (
               <>
-                <p className="font-medium">Video link</p>
-                <a className="text-blue-400" href={videoURL}>
+                <p className="font-medium">Video URL:</p>
+                <Link className="text-blue-400" href={videoURL}>
                   {videoURL}
-                </a>
+                </Link>
               </>
             ) : (
               <>
@@ -178,7 +183,7 @@ function VideoUploadForm({ closeForm }: VideoUploadFormProps) {
   const [file, setFile] = useState<File | null>(null);
   const [titleInput, setTitleInput] = useState("");
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [videoURL, setVideoURL] = useState<string | null>(null);
+  const [video, setVideo] = useState<VideoType | null>(null);
 
   async function handleUpload(file: File) {
     setFile(file);
@@ -197,10 +202,10 @@ function VideoUploadForm({ closeForm }: VideoUploadFormProps) {
       },
     });
     const uploadData = uploadResponse.data;
-    await api.post("/video", {
+    const { data } = await api.post("/video", {
       public_id: uploadData.public_id,
     });
-    setVideoURL("http://video.url");
+    setVideo(data.video);
   }
 
   return (
@@ -219,7 +224,7 @@ function VideoUploadForm({ closeForm }: VideoUploadFormProps) {
               titleInput={titleInput}
               setTitleInput={setTitleInput}
               uploadProgress={uploadProgress}
-              videoURL={videoURL}
+              video={video}
             />
           ) : (
             <VideoInput handleUpload={handleUpload} />
