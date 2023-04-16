@@ -37,7 +37,7 @@ export async function insertVideo(public_id: string, authorId: number) {
     videoData;
   const {
     rows: [video],
-  } = await pool.query(
+  } = await pool.query<VideoType>(
     `
     INSERT INTO videos (title, thumbnail, duration, source_url, width, height, author_id)
     VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -53,9 +53,7 @@ export async function insertVideo(public_id: string, authorId: number) {
       authorId,
     ]
   );
-  return {
-    video,
-  };
+  return video;
 }
 
 export async function getVideo(videoId: number) {
@@ -85,6 +83,28 @@ export async function getVideo(videoId: number) {
       WHERE videos.id = $1;
   `,
     [videoId]
+  );
+  return video;
+}
+
+type UpdateParams = {
+  title: string;
+  description: string;
+};
+
+export async function updateVideo(
+  videoId: number,
+  { title, description }: UpdateParams
+) {
+  const {
+    rows: [video],
+  } = await pool.query(
+    `
+    UPDATE videos
+    SET title = $1, description = $2
+    WHERE id = $3;
+  `,
+    [title, description, videoId]
   );
   return video;
 }

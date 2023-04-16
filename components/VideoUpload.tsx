@@ -124,54 +124,79 @@ function VideoDetailsForm({
 }: VideoDetailsFormProps) {
   const [descriptionInput, setDescriptionInput] = useState("");
   const videoURL = video ? `${window.location.origin}/video/${video.id}` : "";
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    // TODO validation
+    if (!titleInput || !descriptionInput || !video) return;
+    await api.put(`/video/${video.id}`, {
+      title: titleInput,
+      description: descriptionInput,
+    });
+  }
+
   return (
-    <div className="px-12 py-8">
-      <p className="text-2xl font-medium mb-4">Details</p>
-      <div className="flex flex-col items-stretch md:items-start md:flex-row gap-6">
-        <div className="space-y-4 flex-1">
-          <Input
-            value={titleInput}
-            setValue={setTitleInput}
-            fieldName="video-title"
-            label="Title"
-            placeholder="Add a title that describes your video"
-            required
-          />
-          <Input
-            value={descriptionInput}
-            setValue={setDescriptionInput}
-            fieldName="video-description"
-            label="Description"
-            placeholder="Tell viewers about your video"
-            size={4}
-          />
-        </div>
-        <div className="rounded overflow-hidden self-center md:self-start order-first md:order-none bg-slate-900 h-max">
-          <div className="relative w-72 h-40 bg-slate-300">
-            {video ? <Image src={video?.thumbnail} alt="" fill /> : null}
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col justify-between h-full"
+    >
+      <div className="px-12 py-8">
+        <p className="text-2xl font-medium mb-4">Details</p>
+        <div className="flex flex-col items-stretch md:items-start md:flex-row gap-6">
+          <div className="space-y-4 flex-1">
+            <Input
+              value={titleInput}
+              setValue={setTitleInput}
+              fieldName="video-title"
+              label="Title"
+              placeholder="Add a title that describes your video"
+              required
+            />
+            <Input
+              value={descriptionInput}
+              setValue={setDescriptionInput}
+              fieldName="video-description"
+              label="Description"
+              placeholder="Tell viewers about your video"
+              size={4}
+            />
           </div>
-          <div className="p-4 text-sm text-slate-300">
-            {video ? (
-              <>
-                <p className="font-medium">Video URL:</p>
-                <Link className="text-blue-400" href={videoURL}>
-                  {videoURL}
-                </Link>
-              </>
-            ) : (
-              <>
-                <p className="mb-2 font-medium">Uploading</p>
-                <ProgressBar
-                  value={uploadProgress}
-                  max={100}
-                  className="h-1 rounded-full bg-slate-700"
-                />
-              </>
-            )}
+          <div className="rounded overflow-hidden self-center md:self-start order-first md:order-none bg-slate-900 h-max">
+            <div className="relative w-72 h-40 bg-slate-300">
+              {video ? <Image src={video?.thumbnail} alt="" fill /> : null}
+            </div>
+            <div className="p-4 text-sm text-slate-300">
+              {video ? (
+                <>
+                  <p className="font-medium">Video URL:</p>
+                  <Link className="text-blue-400" href={videoURL}>
+                    {videoURL}
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <p className="mb-2 font-medium">Uploading</p>
+                  <ProgressBar
+                    value={uploadProgress}
+                    max={100}
+                    className="h-1 rounded-full bg-slate-700"
+                  />
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      <div className="flex justify-end w-full border-t-slate-700 border-t p-4">
+        <button
+          type="submit"
+          className="bg-green-500 text-slate-950 rounded px-4 py-1 self-end disabled:bg-slate-600 disabled:text-slate-400 disabled:cursor-not-allowed"
+          disabled={!video}
+        >
+          Done
+        </button>
+      </div>
+    </form>
   );
 }
 

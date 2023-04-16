@@ -6,9 +6,6 @@ import { authOptions } from "../auth/[...nextauth]";
 
 type Data =
   | {
-      videos: VideoType[];
-    }
-  | {
       video: VideoType;
     }
   | {
@@ -19,23 +16,20 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  if (req.method === "GET") {
-    const videos = await getVideos();
-    res.status(200).json({
-      videos,
-    });
-  } else if (req.method === "POST") {
+  if (req.method === "PUT") {
     const session = await getServerSession(req, res, authOptions);
     if (!session) {
       return res.status(401).json({
         message: "Unauthorized",
       });
     }
-    const { id: userId } = session.user;
-    const { public_id } = req.body;
-    const video = await insertVideo(public_id, userId);
-    res.status(200).json({
-      video,
+    const { title, description } = req.body;
+    const videoId = Number(req.query.videoId);
+    const video = await updateVideo(videoId, { title, description });
+    res.json({ video });
+  } else {
+    res.status(404).json({
+      message: "Not Found",
     });
-  } else res.status(404).json({ message: "Not Found" });
+  }
 }
