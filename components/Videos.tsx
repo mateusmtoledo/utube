@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { getDateString } from "./VideoList";
+import useRelativeTime from "./RelativeTime";
 
 export function secondsToFormattedDuration(seconds: number): string {
   const numHours = Math.floor(seconds / 3600);
@@ -86,7 +86,7 @@ type VideoDetailsProps = {
 };
 
 export function VideoDetails({ date, viewCount }: VideoDetailsProps) {
-  const dateString = getDateString(date);
+  const dateString = useRelativeTime(date);
   return (
     <p className="text-slate-400 text-sm">{`${viewCount} views • ${dateString}`}</p>
   );

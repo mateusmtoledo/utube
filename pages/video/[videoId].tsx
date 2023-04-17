@@ -7,9 +7,9 @@ import { VideoType } from "@/lib/types";
 import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
 import { useContext } from "react";
-import { AuthorAvatar, AuthorName } from "@/components/Videos";
+import { AuthorAvatar } from "@/components/Videos";
 import { AiOutlineDislike, AiOutlineLike } from "react-icons/ai";
-import { getDateString } from "@/components/VideoList";
+import useRelativeTime from "@/components/RelativeTime";
 
 type Params = {
   videoId: string;
@@ -33,6 +33,7 @@ type VideoPageProps = {
 export default function VideoPage({ video }: VideoPageProps) {
   const { toggleSidebarModal } = useContext(SidebarModalContext);
   const { title, author, description, view_count, date } = video;
+  const relativeTime = useRelativeTime(date);
   return (
     <>
       <Head>
@@ -68,9 +69,7 @@ export default function VideoPage({ video }: VideoPageProps) {
             </div>
           </div>
           <div className="bg-slate-800 rounded-xl px-3 py-2 text-sm mt-2">
-            <p className="font-medium mb-2">{`${view_count} views ${getDateString(
-              date
-            )}`}</p>
+            <p className="font-medium mb-2">{`${view_count} views ${relativeTime}`}</p>
             {description ? (
               <p>{description}</p>
             ) : (
