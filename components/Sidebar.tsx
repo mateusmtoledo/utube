@@ -1,15 +1,27 @@
-import { ReactNode, createContext, useContext } from "react";
+import {
+  HTMLAttributeAnchorTarget,
+  PropsWithoutRef,
+  ReactNode,
+  createContext,
+  useContext,
+} from "react";
 import { IconType } from "react-icons";
 import { BsCollectionPlay } from "react-icons/bs";
 import { MdOutlineVideoLibrary } from "react-icons/md";
 import { VscHistory } from "react-icons/vsc";
 import { RxClock } from "react-icons/rx";
-import { AiOutlineLike, AiOutlineHome } from "react-icons/ai";
+import {
+  AiOutlineLike,
+  AiOutlineHome,
+  AiOutlinePlaySquare,
+} from "react-icons/ai";
 import { SlSettings } from "react-icons/sl";
 import { FiGithub } from "react-icons/fi";
 import Modal from "./Modal";
 import Logo from "./Logo";
 import { CgMenu } from "react-icons/cg";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 // TODO remove this when users have actual icons
 export function UserIcon({
@@ -67,12 +79,17 @@ export function SidebarModal({ toggleSidebarModal }: SidebarModalProps) {
 type SidebarItemProps = {
   Icon: IconType;
   children: ReactNode;
+  href?: string;
+  target?: HTMLAttributeAnchorTarget;
 };
 
-function SidebarItem({ Icon, children }: SidebarItemProps) {
+function SidebarItem({ Icon, href, children, target }: SidebarItemProps) {
+  const router = useRouter();
+  const isActive = router.pathname === href;
+
   const { sidebarExpanded, forceExpand } = useContext(SidebarContext);
-  return (
-    <li className="flex items-center gap-6 h-12 px-3 bg-white rounded-lg bg-opacity-0 hover:bg-opacity-10">
+  const content = (
+    <>
       <Icon size={24} />
       <p
         className={`text-sm ${(() => {
@@ -86,6 +103,22 @@ function SidebarItem({ Icon, children }: SidebarItemProps) {
       >
         {children}
       </p>
+    </>
+  );
+  const className = `flex items-center gap-6 h-11 px-3 w-full bg-white rounded-lg ${
+    isActive
+      ? "bg-opacity-10 hover:bg-opacity-20"
+      : "bg-opacity-0 hover:bg-opacity-10"
+  }`;
+  return (
+    <li>
+      {href ? (
+        <Link className={className} href={href} target={target}>
+          {content}
+        </Link>
+      ) : (
+        <button className={className}>{content}</button>
+      )}
     </li>
   );
 }
@@ -117,12 +150,17 @@ export default function Sidebar({
       >
         <div className="sticky top-[68px]">
           <ul>
-            <SidebarItem Icon={AiOutlineHome}>Home</SidebarItem>
+            <SidebarItem href="/" Icon={AiOutlineHome}>
+              Home
+            </SidebarItem>
             <SidebarItem Icon={BsCollectionPlay}>Subscriptions</SidebarItem>
           </ul>
           <hr className="border-slate-700 my-4" />
           <ul>
             <SidebarItem Icon={MdOutlineVideoLibrary}>Library</SidebarItem>
+            <SidebarItem href="/studio" Icon={AiOutlinePlaySquare}>
+              Your videos
+            </SidebarItem>
             <SidebarItem Icon={VscHistory}>History</SidebarItem>
             <SidebarItem Icon={RxClock}>Watch later</SidebarItem>
             <SidebarItem Icon={AiOutlineLike}>Liked videos</SidebarItem>
@@ -174,7 +212,13 @@ export default function Sidebar({
           </ul>
           <hr className="border-slate-700 my-4 -ml-3" />
           <ul>
-            <SidebarItem Icon={FiGithub}>mateusmtoledo</SidebarItem>
+            <SidebarItem
+              href="https://github.com/mateusmtoledo"
+              target="_blank"
+              Icon={FiGithub}
+            >
+              mateusmtoledo
+            </SidebarItem>
           </ul>
         </div>
       </nav>
