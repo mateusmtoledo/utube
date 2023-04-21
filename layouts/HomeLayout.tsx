@@ -9,7 +9,7 @@ type HomeLayoutProps = {
 
 export default function HomeLayout({ children }: HomeLayoutProps) {
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
-  function toggleSidebar() {
+  function toggleSidebarExpanded() {
     setSidebarExpanded((prev) => !prev);
   }
 
@@ -18,7 +18,7 @@ export default function HomeLayout({ children }: HomeLayoutProps) {
     if (window.innerWidth < 768) {
       toggleSidebarModal();
     } else {
-      toggleSidebar();
+      toggleSidebarExpanded();
     }
   }
 

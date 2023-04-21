@@ -10,6 +10,8 @@ import { useContext } from "react";
 import { AuthorAvatar } from "@/components/Videos";
 import { AiOutlineDislike, AiOutlineLike } from "react-icons/ai";
 import useRelativeTime from "@/components/RelativeTime";
+import { NextPageWithLayout } from "../_app";
+import VideoPageLayout from "@/layouts/VideoPageLayout";
 
 type Params = {
   videoId: string;
@@ -30,8 +32,7 @@ type VideoPageProps = {
   video: VideoType;
 };
 
-export default function VideoPage({ video }: VideoPageProps) {
-  const { toggleSidebarModal } = useContext(SidebarModalContext);
+const VideoPage: NextPageWithLayout<VideoPageProps> = ({ video }) => {
   const { title, author, description, view_count, date } = video;
   const relativeTime = useRelativeTime(date);
   return (
@@ -39,7 +40,6 @@ export default function VideoPage({ video }: VideoPageProps) {
       <Head>
         <title>{`${title} - UTube`}</title>
       </Head>
-      <Header handleToggleSidebar={toggleSidebarModal} />
       <div className="flex flex-col lg:flex-row justify-center p-2 sm:p-8 gap-6">
         <div className="flex flex-1 max-w-6xl flex-col gap-2">
           <VideoPlayer video={video} />
@@ -81,4 +81,10 @@ export default function VideoPage({ video }: VideoPageProps) {
       </div>
     </>
   );
-}
+};
+
+VideoPage.getLayout = (page) => {
+  return <VideoPageLayout>{page}</VideoPageLayout>;
+};
+
+export default VideoPage;

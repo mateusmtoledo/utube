@@ -1,16 +1,21 @@
 import Head from "next/head";
 import VideoList from "@/components/VideoList";
 import HomeLayout from "@/layouts/HomeLayout";
+import { NextPageWithLayout } from "./_app";
 
-export default function Home() {
+const Home: NextPageWithLayout = () => {
   return (
     <>
       <Head>
         <title>UTube</title>
       </Head>
-      <HomeLayout>
-        <VideoList />
-      </HomeLayout>
+      <VideoList />
     </>
   );
-}
+};
+
+Home.getLayout = (page) => {
+  return <HomeLayout>{page}</HomeLayout>;
+};
+
+export default Home;

@@ -9,15 +9,27 @@ import { useState } from "react";
 import SidebarModalContext from "@/contexts/SidebarModalContext";
 import { SidebarModal } from "@/components/Sidebar";
 import Head from "next/head";
+import type { ReactElement, ReactNode } from "react";
+import type { NextPage } from "next";
+
+export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
+  getLayout?: (page: ReactElement) => ReactNode;
+};
+
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout;
+};
 
 export default function App({
   Component,
   pageProps: { session, ...pageProps },
-}: AppProps) {
+}: AppPropsWithLayout) {
   const [sidebarModalVisible, setSidebarModalVisible] = useState(false);
   function toggleSidebarModal() {
     setSidebarModalVisible((prev) => !prev);
   }
+
+  const getLayout = Component.getLayout ?? ((page) => page);
 
   return (
     <>
@@ -34,7 +46,7 @@ export default function App({
         <SessionProvider session={session}>
           <SkeletonTheme baseColor="#334155" highlightColor="#475569">
             <SidebarModalContext.Provider value={{ toggleSidebarModal }}>
-              <Component {...pageProps} />
+              {getLayout(<Component {...pageProps} />)}
               {sidebarModalVisible && (
                 <SidebarModal toggleSidebarModal={toggleSidebarModal} />
               )}
