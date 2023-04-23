@@ -146,9 +146,9 @@ export default function Sidebar({
           if (forceExpand) return "w-60";
           else if (sidebarExpanded) return "hidden sm:block md:w-60";
           else return "hidden sm:block";
-        })()} px-3`}
+        })()} px-3 sticky top-[68px]`}
       >
-        <div className="sticky top-[68px]">
+        <div>
           <ul>
             <SidebarItem href="/" Icon={AiOutlineHome}>
               Home

@@ -100,10 +100,14 @@ type StudioVideosProps = {
 export default function StudioVideos({ videos }: StudioVideosProps) {
   const [editing, setEditing] = useState<VideoType | null>(null);
 
+  function closeForm() {
+    setEditing(null);
+  }
+
   return (
     <div className="my-4">
       {editing ? (
-        <VideoFormModal title="Edit video" closeForm={() => setEditing(null)}>
+        <VideoFormModal title="Edit video" closeForm={closeForm}>
           <VideoDetailsForm
             key={editing.id}
             initialTitle={editing.title}

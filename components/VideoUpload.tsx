@@ -16,6 +16,9 @@ import ProgressBar from "./ProgressBar";
 import Link from "next/link";
 import { VideoType } from "@/lib/types";
 import Image from "next/image";
+import { useRouter } from "next/router";
+import getVideoUrl from "@/helpers/getVideoUrl";
+import { toast } from "react-toastify";
 
 type VideoFormModalProps = {
   children: ReactNode;
@@ -98,6 +101,7 @@ type InputProps = {
   placeholder: string;
   size?: number;
   setValue: Dispatch<SetStateAction<string>>;
+  disabled?: boolean;
 };
 
 function Input({
@@ -108,6 +112,7 @@ function Input({
   setValue,
   size = 1,
   placeholder,
+  disabled,
 }: InputProps) {
   const [isFocused, setIsFocused] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -139,6 +144,7 @@ function Input({
         placeholder={placeholder}
         rows={size}
         ref={textareaRef}
+        disabled={disabled}
       />
     </div>
   );
@@ -161,16 +167,26 @@ export function VideoDetailsForm({
   const [descriptionInput, setDescriptionInput] = useState(
     initialDescription || ""
   );
+  const [loading, setLoading] = useState(false);
   const videoURL = video ? `${window.location.origin}/video/${video.id}` : "";
+  const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setLoading(true);
     // TODO validation
     if (!titleInput || !video) return;
-    await api.put(`/video/${video.id}`, {
-      title: titleInput,
-      description: descriptionInput,
-    });
+    try {
+      await api.put(`/video/${video.id}`, {
+        title: titleInput,
+        description: descriptionInput,
+      });
+      router.push(getVideoUrl(video.id));
+      toast.success("Video successfully updated!");
+    } catch (err) {
+      setLoading(false);
+      toast.error("Something went wrong.");
+    }
   }
 
   return (
@@ -189,6 +205,7 @@ export function VideoDetailsForm({
               label="Title"
               placeholder="Add a title that describes your video"
               required
+              disabled={loading}
             />
             <Input
               value={descriptionInput}
@@ -197,6 +214,7 @@ export function VideoDetailsForm({
               label="Description"
               placeholder="Tell viewers about your video"
               size={4}
+              disabled={loading}
             />
           </div>
           <div className="rounded overflow-hidden self-center md:self-start order-first md:order-none bg-slate-900 h-max">
@@ -229,7 +247,7 @@ export function VideoDetailsForm({
         <button
           type="submit"
           className="bg-green-500 text-slate-950 rounded px-4 py-1 self-end disabled:bg-slate-600 disabled:text-slate-400 disabled:cursor-not-allowed"
-          disabled={!video}
+          disabled={loading || !video}
         >
           Done
         </button>

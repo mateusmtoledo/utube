@@ -1,5 +1,6 @@
 import "@/styles/globals.css";
 import "react-loading-skeleton/dist/skeleton.css";
+import "react-toastify/dist/ReactToastify.min.css";
 import type { AppProps } from "next/app";
 import { SessionProvider } from "next-auth/react";
 import { SkeletonTheme } from "react-loading-skeleton";
@@ -11,6 +12,7 @@ import { SidebarModal } from "@/components/Sidebar";
 import Head from "next/head";
 import type { ReactElement, ReactNode } from "react";
 import type { NextPage } from "next";
+import { ToastContainer } from "react-toastify";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -54,6 +56,7 @@ export default function App({
           </SkeletonTheme>
         </SessionProvider>
       </SWRConfig>
+      <ToastContainer theme="colored" position="bottom-right" />
     </>
   );
 }
