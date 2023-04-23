@@ -25,7 +25,7 @@ export default function HomeLayout({ children }: HomeLayoutProps) {
   return (
     <>
       <Header handleToggleSidebar={handleToggleSidebar} />
-      <main className="flex mt-3">
+      <main className="flex mt-3 items-start">
         <Sidebar sidebarExpanded={sidebarExpanded} />
         <div className="flex-1 min-w-0 p-4">{children}</div>
       </main>

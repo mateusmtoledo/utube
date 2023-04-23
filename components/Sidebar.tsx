@@ -66,7 +66,7 @@ export function SidebarModal({ toggleSidebarModal }: SidebarModalProps) {
   return (
     <Modal closeModal={toggleSidebarModal}>
       <div className="fixed top-0 left-0 bg-slate-950 h-screen">
-        <div className="flex items-center gap-6 px-6 py-3 mb-3">
+        <div className="flex items-center gap-6 px-6 py-3">
           <ToggleSidebarButton toggleSidebar={toggleSidebarModal} />
           <Logo />
         </div>
