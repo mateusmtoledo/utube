@@ -17,10 +17,26 @@ function getRelativeTime(date: string) {
   return "0 seconds ago";
 }
 
-export default function useRelativeTime(date: string) {
+export function useRelativeTime(date: string) {
   const [relativeTime, setRelativeTime] = useState<string | null>(null);
   useEffect(() => {
     setRelativeTime(getRelativeTime(date));
   }, [date]);
   return relativeTime;
+}
+
+function getFormattedDate(date: string) {
+  return new Date(date).toLocaleDateString(undefined, {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+export function useFormattedDate(date: string) {
+  const [formattedDate, setFormattedDate] = useState<string | null>(null);
+  useEffect(() => {
+    setFormattedDate(getFormattedDate(date));
+  }, [date]);
+  return formattedDate;
 }

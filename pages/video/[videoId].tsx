@@ -9,7 +9,7 @@ import Head from "next/head";
 import { useContext } from "react";
 import { AuthorAvatar } from "@/components/Videos";
 import { AiOutlineDislike, AiOutlineLike } from "react-icons/ai";
-import useRelativeTime from "@/components/RelativeTime";
+import { useRelativeTime } from "@/helpers/timeFormatter";
 import { NextPageWithLayout } from "../_app";
 import VideoPageLayout from "@/layouts/VideoPageLayout";
 

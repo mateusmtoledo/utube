@@ -1,5 +1,5 @@
 import Image from "next/image";
-import useRelativeTime from "./RelativeTime";
+import { useRelativeTime } from "../helpers/timeFormatter";
 
 export function secondsToFormattedDuration(seconds: number): string {
   const numHours = Math.floor(seconds / 3600);
@@ -17,6 +17,8 @@ type VideoThumbnailProps = {
   videoDuration: number;
   width?: number;
   height?: number;
+  rounded?: boolean;
+  className?: string;
 };
 
 export function VideoThumbnail({
@@ -24,9 +26,15 @@ export function VideoThumbnail({
   width,
   height,
   videoDuration,
+  rounded = true,
+  className = "",
 }: VideoThumbnailProps) {
   return (
-    <div className="relative w-full aspect-[9/5] rounded-xl overflow-hidden">
+    <div
+      className={`relative max-w-max aspect-[9/5] ${className} ${
+        rounded ? "rounded-xl" : ""
+      } overflow-hidden`}
+    >
       <Image
         src={thumbnailUrl}
         alt=""

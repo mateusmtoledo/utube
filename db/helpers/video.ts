@@ -108,3 +108,29 @@ export async function updateVideo(
   );
   return video;
 }
+
+export async function getVideosByAuthorId(authorId: number) {
+  const { rows: videos } = await pool.query(
+    `
+      SELECT
+      videos.id,
+      title,
+      description,
+      thumbnail,
+      date,
+      view_count,
+      duration,
+      json_build_object(
+        'id', users.id,
+        'name', users.name,
+        'image', users.image
+      ) AS author
+      FROM videos
+      INNER JOIN users
+      ON users.id = videos.author_id
+      WHERE videos.author_id = $1;
+    `,
+    [authorId]
+  );
+  return videos;
+}
