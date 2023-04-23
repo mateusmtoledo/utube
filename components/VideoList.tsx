@@ -65,7 +65,7 @@ function Video({ video }: VideoProps) {
 export default function VideoList() {
   const { data, isLoading } = useVideos();
   return (
-    <ul className="grid justify-center m-auto grid-cols-video-list gap-x-4 gap-y-8 max-w-[1500px] min-w-0">
+    <ul className="grid justify-center justify-items-center m-auto grid-cols-video-list gap-x-4 gap-y-8 max-w-[1500px] min-w-0">
       {isLoading || !data
         ? new Array(8).fill(null).map((_, i) => <VideoSkeleton key={i} />)
         : data.videos.map((video: VideoType) => (

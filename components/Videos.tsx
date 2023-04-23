@@ -15,8 +15,8 @@ export function secondsToFormattedDuration(seconds: number): string {
 type VideoThumbnailProps = {
   thumbnailUrl: string;
   videoDuration: number;
-  width?: number;
-  height?: number;
+  width?: number | string;
+  height?: number | string;
   rounded?: boolean;
   className?: string;
 };
@@ -30,17 +30,13 @@ export function VideoThumbnail({
   className = "",
 }: VideoThumbnailProps) {
   return (
-    <div
-      className={`relative max-w-max aspect-[9/5] ${className} ${
-        rounded ? "rounded-xl" : ""
-      } overflow-hidden`}
-    >
+    <div className={`relative max-w-max aspect-[9/5] ${className}`}>
       <Image
         src={thumbnailUrl}
         alt=""
-        width={width || 340}
-        height={height || 180}
-        className="object-cover"
+        width={typeof width === "number" ? width : 340}
+        height={typeof height === "number" ? height : 180}
+        className={`object-cover ${rounded ? "rounded-xl" : ""}`}
         style={{ width: width || "100%", height: height || "100%" }}
       />
       <p className="absolute bottom-1 right-1 text-xs font-medium bg-slate-950 bg-opacity-90 px-1 rounded">
