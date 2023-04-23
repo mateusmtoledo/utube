@@ -1,4 +1,9 @@
-import { getVideos, insertVideo, updateVideo } from "@/db/helpers/video";
+import {
+  getVideo,
+  getVideos,
+  insertVideo,
+  updateVideo,
+} from "@/db/helpers/video";
 import { VideoType } from "@/lib/types";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
@@ -18,13 +23,14 @@ export default async function handler(
 ) {
   if (req.method === "PUT") {
     const session = await getServerSession(req, res, authOptions);
-    if (!session) {
+    const videoId = Number(req.query.videoId);
+    const oldVideo = await getVideo(videoId);
+    if (!session || oldVideo.author.id !== session.user.id) {
       return res.status(401).json({
         message: "Unauthorized",
       });
     }
     const { title, description } = req.body;
-    const videoId = Number(req.query.videoId);
     const video = await updateVideo(videoId, { title, description });
     res.json({ video });
   } else {

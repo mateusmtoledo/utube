@@ -1,4 +1,11 @@
-import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useRef,
+  useState,
+} from "react";
 import Modal from "./Modal";
 import { BiVideoPlus } from "react-icons/bi";
 import { VscClose } from "react-icons/vsc";
@@ -9,6 +16,33 @@ import ProgressBar from "./ProgressBar";
 import Link from "next/link";
 import { VideoType } from "@/lib/types";
 import Image from "next/image";
+
+type VideoFormModalProps = {
+  children: ReactNode;
+  title: string;
+  closeForm: () => void;
+};
+
+export function VideoFormModal({
+  children,
+  title,
+  closeForm,
+}: VideoFormModalProps) {
+  return (
+    <Modal maxWidth={896}>
+      <div className="flex flex-col bg-slate-800 border border-slate-700 rounded-md relative max-h-[816px] h-screen m-4">
+        <div className="px-6 py-4 flex justify-between items-center">
+          <p className="font-medium text-xl">{title}</p>
+          <button onClick={closeForm}>
+            <VscClose size={32} />
+          </button>
+        </div>
+        <hr className="border-slate-700" />
+        <div className="h-full">{children}</div>
+      </div>
+    </Modal>
+  );
+}
 
 export function VideoUploadButton() {
   const [formVisible, setFormVisible] = useState(false);
@@ -98,6 +132,7 @@ function Input({
       <textarea
         onChange={onChange}
         id={fieldName}
+        value={value}
         className="bg-transparent outline-none placeholder:text-slate-500 resize-none overflow-hidden"
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
@@ -110,25 +145,28 @@ function Input({
 }
 
 type VideoDetailsFormProps = {
-  titleInput: string;
-  setTitleInput: Dispatch<SetStateAction<string>>;
-  uploadProgress: number;
+  initialTitle: string;
+  initialDescription?: string;
+  uploadProgress?: number;
   video: VideoType | null;
 };
 
-function VideoDetailsForm({
-  titleInput,
-  setTitleInput,
+export function VideoDetailsForm({
+  initialTitle,
+  initialDescription,
   uploadProgress,
   video,
 }: VideoDetailsFormProps) {
-  const [descriptionInput, setDescriptionInput] = useState("");
+  const [titleInput, setTitleInput] = useState(initialTitle);
+  const [descriptionInput, setDescriptionInput] = useState(
+    initialDescription || ""
+  );
   const videoURL = video ? `${window.location.origin}/video/${video.id}` : "";
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     // TODO validation
-    if (!titleInput || !descriptionInput || !video) return;
+    if (!titleInput || !video) return;
     await api.put(`/video/${video.id}`, {
       title: titleInput,
       description: descriptionInput,
@@ -177,7 +215,7 @@ function VideoDetailsForm({
                 <>
                   <p className="mb-2 font-medium">Uploading</p>
                   <ProgressBar
-                    value={uploadProgress}
+                    value={uploadProgress || 0}
                     max={100}
                     className="h-1 rounded-full bg-slate-700"
                   />
@@ -206,13 +244,11 @@ type VideoUploadFormProps = {
 
 function VideoUploadForm({ closeForm }: VideoUploadFormProps) {
   const [file, setFile] = useState<File | null>(null);
-  const [titleInput, setTitleInput] = useState("");
   const [uploadProgress, setUploadProgress] = useState(0);
   const [video, setVideo] = useState<VideoType | null>(null);
 
   async function handleUpload(file: File) {
     setFile(file);
-    setTitleInput(file.name.replace(/\.[^/.]+$/, ""));
     const formData = new FormData();
     formData.append("file", file);
     formData.append("upload_preset", "s57kcdni");
@@ -232,30 +268,17 @@ function VideoUploadForm({ closeForm }: VideoUploadFormProps) {
     });
     setVideo(data.video);
   }
-
   return (
-    <Modal maxWidth={896}>
-      <div className="flex flex-col bg-slate-800 border border-slate-700 rounded-md relative max-h-[816px] h-screen m-4">
-        <div className="px-6 py-4 flex justify-between items-center">
-          <p className="font-medium text-xl">Upload video</p>
-          <button onClick={closeForm}>
-            <VscClose size={32} />
-          </button>
-        </div>
-        <hr className="border-slate-700" />
-        <div className="h-full">
-          {file ? (
-            <VideoDetailsForm
-              titleInput={titleInput}
-              setTitleInput={setTitleInput}
-              uploadProgress={uploadProgress}
-              video={video}
-            />
-          ) : (
-            <VideoInput handleUpload={handleUpload} />
-          )}
-        </div>
-      </div>
-    </Modal>
+    <VideoFormModal title="Upload video" closeForm={closeForm}>
+      {file ? (
+        <VideoDetailsForm
+          video={video}
+          initialTitle={file.name.replace(/\.[^/.]+$/, "")}
+          uploadProgress={uploadProgress}
+        />
+      ) : (
+        <VideoInput handleUpload={handleUpload} />
+      )}
+    </VideoFormModal>
   );
 }

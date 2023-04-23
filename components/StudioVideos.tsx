@@ -7,25 +7,31 @@ import { IconType } from "react-icons/lib";
 import { AiOutlinePlayCircle } from "react-icons/ai";
 import getVideoUrl from "@/helpers/getVideoUrl";
 import Link from "next/link";
+import { VideoDetailsForm, VideoFormModal } from "./VideoUpload";
 
 type StudioButtonProps = {
   Icon: IconType;
-  href: string;
+  href?: string;
+  setEditing?: () => void;
 };
 
-function StudioButton({ Icon, href }: StudioButtonProps) {
-  return (
-    <Link href={href}>
-      <Icon size={24} className="fill-slate-400 hover:fill-slate-100" />
-    </Link>
+function StudioButton({ Icon, href, setEditing }: StudioButtonProps) {
+  const content = (
+    <Icon size={24} className="fill-slate-400 hover:fill-slate-100" />
+  );
+  return href ? (
+    <Link href={href}>{content}</Link>
+  ) : (
+    <button onClick={setEditing}>{content}</button>
   );
 }
 
 type StudioVideoProps = {
   video: VideoType;
+  setEditing: () => void;
 };
 
-function StudioVideo({ video }: StudioVideoProps) {
+function StudioVideo({ video, setEditing }: StudioVideoProps) {
   const { id, thumbnail, duration, view_count, date, title, description } =
     video;
   const formattedDate = useFormattedDate(date);
@@ -49,7 +55,7 @@ function StudioVideo({ video }: StudioVideoProps) {
           <p className="font-medium">{title}</p>
           {hovered ? (
             <div className="flex flex-1 items-end gap-2">
-              <StudioButton Icon={MdOutlineEdit} href="#" />
+              <StudioButton Icon={MdOutlineEdit} setEditing={setEditing} />
               <StudioButton Icon={AiOutlinePlayCircle} href={getVideoUrl(id)} />
             </div>
           ) : (
@@ -92,12 +98,28 @@ type StudioVideosProps = {
 };
 
 export default function StudioVideos({ videos }: StudioVideosProps) {
+  const [editing, setEditing] = useState<VideoType | null>(null);
+
   return (
     <div className="my-4">
+      {editing ? (
+        <VideoFormModal title="Edit video" closeForm={() => setEditing(null)}>
+          <VideoDetailsForm
+            key={editing.id}
+            initialTitle={editing.title}
+            initialDescription={editing.description}
+            video={editing}
+          />
+        </VideoFormModal>
+      ) : null}
       <TableHeader />
       <ul className="flex flex-col">
         {videos.map((video) => (
-          <StudioVideo key={video.id} video={video} />
+          <StudioVideo
+            key={video.id}
+            setEditing={() => setEditing(video)}
+            video={video}
+          />
         ))}
       </ul>
     </div>
