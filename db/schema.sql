@@ -60,8 +60,19 @@ CREATE TABLE videos
   width INTEGER NOT NULL,
   height INTEGER NOT NULL,
 
+  PRIMARY KEY (id)
+);
+
+CREATE TYPE reaction AS ENUM ('like', 'dislike'); 
+
+CREATE TABLE reactions 
+(
+  id SERIAL,
+  video_id INTEGER NOT NULL,
+  author_id INTEGER NOT NULL,
+  reaction reaction NOT NULL,
+
   PRIMARY KEY (id),
-  CONSTRAINT author
-    FOREIGN KEY (author_id)
-      REFERENCES users(id)
+  CONSTRAINT unique_video_author
+    UNIQUE (video_id, author_id)
 );

@@ -3,15 +3,24 @@ import VideoPlayer from "@/components/VideoPlayer";
 import RecommendedVideoList from "@/components/RecommendedVideoList";
 import SidebarModalContext from "@/contexts/SidebarModalContext";
 import { getVideo } from "@/db/helpers/video";
-import { VideoType } from "@/lib/types";
+import { ReactionType, VideoType } from "@/lib/types";
 import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthorAvatar } from "@/components/Videos";
-import { AiOutlineDislike, AiOutlineLike } from "react-icons/ai";
+import {
+  AiFillDislike,
+  AiFillLike,
+  AiOutlineDislike,
+  AiOutlineLike,
+} from "react-icons/ai";
 import { useRelativeTime } from "@/helpers/timeFormatter";
 import { NextPageWithLayout } from "../_app";
 import VideoPageLayout from "@/layouts/VideoPageLayout";
+import api from "@/adapters/axios";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]";
+import { getLikeCount, getReaction } from "@/db/helpers/reaction";
 
 type Params = {
   videoId: string;
@@ -19,22 +28,58 @@ type Params = {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { videoId } = context.params as Params;
+  const session = await getServerSession(context.req, context.res, authOptions);
   const video = await getVideo(Number(videoId));
   video.date = new Date(video.date).toISOString();
+  const userReaction = await getReaction(Number(videoId), session?.user.id);
+  const likeCount = await getLikeCount(Number(videoId));
   return {
     props: {
       video,
+      userReaction,
+      likeCount,
     },
   };
 }
 
 type VideoPageProps = {
   video: VideoType;
+  userReaction: ReactionType;
+  likeCount: number;
 };
 
-const VideoPage: NextPageWithLayout<VideoPageProps> = ({ video }) => {
-  const { title, author, description, view_count, date } = video;
+const VideoPage: NextPageWithLayout<VideoPageProps> = ({
+  video,
+  userReaction: initialUserReaction,
+  likeCount: initialLikeCount,
+}) => {
+  const [userReaction, setUserReaction] = useState(initialUserReaction);
+  const [likeCount, setLikeCount] = useState(initialLikeCount);
+  const { id, title, author, description, view_count, date } = video;
   const relativeTime = useRelativeTime(date);
+
+  async function likeVideo() {
+    await api.post(`/video/${id}/reaction`, {
+      reaction: "like",
+    });
+    setUserReaction("like");
+    setLikeCount((prev) => prev + 1);
+  }
+
+  async function dislikeVideo() {
+    await api.post(`/video/${id}/reaction`, {
+      reaction: "dislike",
+    });
+    if (userReaction === "like") setLikeCount((prev) => prev - 1);
+    setUserReaction("dislike");
+  }
+
+  async function removeReaction() {
+    await api.delete(`/video/${id}/reaction`);
+    if (userReaction === "like") setLikeCount((prev) => prev - 1);
+    setUserReaction(null);
+  }
+
   return (
     <>
       <Head>
@@ -58,13 +103,29 @@ const VideoPage: NextPageWithLayout<VideoPageProps> = ({ video }) => {
               </button>
             </div>
             <div className="flex items-center rounded-full bg-slate-800 overflow-hidden">
-              <button className="flex gap-2 items-center px-4 py-2 hover:bg-slate-700">
-                <AiOutlineLike size={24} />
-                <p className="font-medium">0</p>
+              <button
+                onClick={userReaction === "like" ? removeReaction : likeVideo}
+                className="flex gap-2 items-center px-4 py-2 hover:bg-slate-700"
+              >
+                {userReaction === "like" ? (
+                  <AiFillLike size={24} />
+                ) : (
+                  <AiOutlineLike size={24} />
+                )}
+                <p className="font-medium">{likeCount}</p>
               </button>
               <div className="border-l border-l-slate-600 border-solid h-6" />
-              <button className="px-4 py-2 hover:bg-slate-700">
-                <AiOutlineDislike size={24} />
+              <button
+                onClick={
+                  userReaction === "dislike" ? removeReaction : dislikeVideo
+                }
+                className="px-4 py-2 hover:bg-slate-700"
+              >
+                {userReaction === "dislike" ? (
+                  <AiFillDislike size={24} />
+                ) : (
+                  <AiOutlineDislike size={24} />
+                )}
               </button>
             </div>
           </div>

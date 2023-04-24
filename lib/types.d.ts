@@ -17,3 +17,5 @@ export type UserType = {
   name: string;
   image: string;
 };
+
+export type ReactionType = "like" | "dislike" | null;
