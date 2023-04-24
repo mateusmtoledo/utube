@@ -146,7 +146,7 @@ export default function Sidebar({
           if (forceExpand) return "w-60";
           else if (sidebarExpanded) return "hidden sm:block md:w-60";
           else return "hidden sm:block";
-        })()} px-3 sticky top-[68px]`}
+        })()} sticky top-14 p-3`}
       >
         <div>
           <ul>
