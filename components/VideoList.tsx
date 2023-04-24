@@ -15,7 +15,7 @@ import {
 
 function VideoSkeleton() {
   return (
-    <li>
+    <li className="w-full">
       <div className="aspect-[9/5] w-full mb-4 rounded-xl overflow-hidden">
         <div className="relative w-full h-full">
           <Skeleton className="w-full h-full relative -top-1" />
