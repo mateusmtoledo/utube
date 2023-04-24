@@ -25,7 +25,7 @@
 
 .studio-table-row > *:nth-child(1) {
   width: 100%;
-  max-width: 256px;
+  max-width: 320px;
 }
 
 .studio-table-row > *:not(:first-child) {

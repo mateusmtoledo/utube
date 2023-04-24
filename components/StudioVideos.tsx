@@ -52,7 +52,7 @@ function StudioVideo({ video, setEditing }: StudioVideoProps) {
           className="-my-2"
         />
         <div className="flex flex-col gap-1">
-          <p className="font-medium">{title}</p>
+          <p className="font-medium line-clamp-1 break-all">{title}</p>
           {hovered ? (
             <div className="flex flex-1 items-end gap-2">
               <StudioButton Icon={MdOutlineEdit} setEditing={setEditing} />
@@ -60,7 +60,7 @@ function StudioVideo({ video, setEditing }: StudioVideoProps) {
             </div>
           ) : (
             <p
-              className={`text-xs ${
+              className={`text-xs line-clamp-2 break-all ${
                 description ? "text-slate-400" : "text-slate-600"
               }`}
             >

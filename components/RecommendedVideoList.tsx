@@ -12,8 +12,8 @@ export function RecommendedVideo({ video }: RecommendedVideoProps) {
   const { id, title, author, thumbnail, duration, view_count, date } = video;
   const videoUrl = getVideoUrl(id);
   return (
-    <li className="flex gap-2">
-      <Link href={videoUrl}>
+    <li className="flex gap-2 max-w-sm">
+      <Link href={videoUrl} className="w-max flex-shrink-0">
         <VideoThumbnail
           thumbnailUrl={thumbnail}
           videoDuration={duration}

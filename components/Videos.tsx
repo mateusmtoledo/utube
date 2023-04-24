@@ -70,7 +70,7 @@ type VideoTitleProps = {
 
 export function VideoTitle({ videoTitle }: VideoTitleProps) {
   return (
-    <p className="font-medium text-base leading-tight mb-2 line-clamp-2 mr-6">
+    <p className="font-medium text-base leading-tight mb-2 line-clamp-2 mr-6 break-all">
       {videoTitle}
     </p>
   );
@@ -81,7 +81,11 @@ type AuthorNameProps = {
 };
 
 export function AuthorName({ authorName }: AuthorNameProps) {
-  return <p className="text-slate-400 text-sm">{authorName}</p>;
+  return (
+    <p className="text-slate-400 text-sm line-clamp-1 break-all">
+      {authorName}
+    </p>
+  );
 }
 
 type VideoDetailsProps = {
