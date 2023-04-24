@@ -18,7 +18,7 @@ const StudioPage: NextPageWithLayout<StudioPageProps> = ({ videos }) => {
       <Head>
         <title>Studio - UTube</title>
       </Head>
-      <div>
+      <div className="max-w-[1500px] mx-auto">
         <h2 className="font-semibold text-2xl">Channel Content</h2>
         <StudioVideos videos={videos} />
       </div>

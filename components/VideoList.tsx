@@ -46,8 +46,8 @@ function Video({ video }: VideoProps) {
   const { id, title, date, view_count, author, thumbnail, duration } = video;
 
   return (
-    <li>
-      <Link href={getVideoUrl(id)} className="space-y-3">
+    <li className="w-full">
+      <Link href={getVideoUrl(id)} className="space-y-3 w-full">
         <VideoThumbnail thumbnailUrl={thumbnail} videoDuration={duration} />
         <div className="flex gap-3">
           <AuthorAvatar avatarUrl={author.image} />

@@ -30,7 +30,7 @@ export function VideoThumbnail({
   className = "",
 }: VideoThumbnailProps) {
   return (
-    <div className={`relative max-w-max aspect-[9/5] ${className}`}>
+    <div className={`relative aspect-[9/5] ${className}`}>
       <Image
         src={thumbnailUrl}
         alt=""

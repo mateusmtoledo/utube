@@ -105,7 +105,7 @@ export default function StudioVideos({ videos }: StudioVideosProps) {
   }
 
   return (
-    <div className="my-4">
+    <div className="my-2">
       {editing ? (
         <VideoFormModal title="Edit video" closeForm={closeForm}>
           <VideoDetailsForm
