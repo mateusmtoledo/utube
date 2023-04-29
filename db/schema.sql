@@ -76,3 +76,15 @@ CREATE TABLE reactions
   CONSTRAINT unique_video_author
     UNIQUE (video_id, author_id)
 );
+
+CREATE TABLE video_views
+(
+  id SERIAL,
+  video_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (id),
+  CONSTRAINT unique_video_view
+    UNIQUE (video_id, user_id)
+);

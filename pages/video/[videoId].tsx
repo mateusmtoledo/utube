@@ -29,9 +29,11 @@ type Params = {
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { videoId } = context.params as Params;
   const session = await getServerSession(context.req, context.res, authOptions);
-  const video = await getVideo(Number(videoId));
+  const video = await getVideo(Number(videoId), session?.user?.id);
   video.date = new Date(video.date).toISOString();
-  const userReaction = await getReaction(Number(videoId), session?.user.id);
+  let userReaction;
+  if (session)
+    userReaction = await getReaction(Number(videoId), session?.user.id);
   const likeCount = await getLikeCount(Number(videoId));
   return {
     props: {

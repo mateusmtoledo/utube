@@ -56,7 +56,13 @@ export async function insertVideo(public_id: string, authorId: number) {
   return video;
 }
 
-export async function getVideo(videoId: number) {
+export async function getVideo(videoId: number, userId?: number) {
+  pool.query(
+    `
+      UPDATE videos SET view_count = view_count + 1 WHERE id = $1;
+  `,
+    [videoId]
+  );
   const {
     rows: [video],
   } = await pool.query<VideoType>(
@@ -84,6 +90,18 @@ export async function getVideo(videoId: number) {
   `,
     [videoId]
   );
+  if (userId) {
+    await pool.query(
+      `
+      INSERT INTO video_views (video_id, user_id)
+      VALUES ($1, $2)
+      ON CONFLICT ON CONSTRAINT unique_video_view
+      DO UPDATE SET date = CURRENT_TIMESTAMP
+      WHERE video_views.video_id = $1 AND video_views.user_id= $2;
+    `,
+      [videoId, userId]
+    );
+  }
   return video;
 }
 
