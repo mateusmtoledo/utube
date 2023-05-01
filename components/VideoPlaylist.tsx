@@ -82,8 +82,11 @@ function PlaylistVideo({ video, index }: PlaylistVideoProps) {
         />
         <div className="flex flex-col gap-1">
           <VideoTitle videoTitle={video.title} />
-          {/* // TODO add author name */}
-          <VideoDetails date={video.date} viewCount={video.view_count} />
+          <VideoDetails
+            authorName={video.author.name}
+            date={video.date}
+            viewCount={video.view_count}
+          />
         </div>
       </Link>
     </li>
