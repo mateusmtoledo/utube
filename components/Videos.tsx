@@ -90,14 +90,28 @@ export function AuthorName({ authorName }: AuthorNameProps) {
   );
 }
 
+function concatWithSeparator(...values: (string | null | undefined)[]): string {
+  return values.reduce((acc: string, value) => {
+    if (!value) return acc;
+    const convertedValue = value ? String(value) : "";
+    if (acc.length === 0) return convertedValue;
+    return acc + " • " + convertedValue;
+  }, "");
+}
+
 type VideoDetailsProps = {
-  date: string;
-  viewCount: number;
+  date?: string;
+  viewCount?: number;
+  authorName?: string;
 };
 
-export function VideoDetails({ date, viewCount }: VideoDetailsProps) {
+export function VideoDetails({
+  date,
+  viewCount,
+  authorName,
+}: VideoDetailsProps) {
+  const views = viewCount ? viewCount + " views" : null;
   const dateString = useRelativeTime(date);
-  return (
-    <p className="text-slate-400 text-sm">{`${viewCount} views • ${dateString}`}</p>
-  );
+  const text = concatWithSeparator(authorName, views, dateString);
+  return <p className="text-slate-400 text-sm">{text}</p>;
 }

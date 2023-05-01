@@ -17,10 +17,10 @@ function getRelativeTime(date: string) {
   return "0 seconds ago";
 }
 
-export function useRelativeTime(date: string) {
+export function useRelativeTime(date: string | undefined) {
   const [relativeTime, setRelativeTime] = useState<string | null>(null);
   useEffect(() => {
-    setRelativeTime(getRelativeTime(date));
+    if (typeof date === "string") setRelativeTime(getRelativeTime(date));
   }, [date]);
   return relativeTime;
 }

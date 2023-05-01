@@ -18,7 +18,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       playlist: {
         videos: likedVideos.map((video) => ({
           ...video,
-          date: new Date(video.date).getTime(),
+          date: new Date(video.date).toISOString(),
         })),
         title: "Liked videos",
         author: session.user,
