@@ -19,3 +19,9 @@ export type UserType = {
 };
 
 export type ReactionType = "like" | "dislike" | null;
+
+export type PlaylistType = {
+  videos: VideoType[];
+  title: string;
+  author: UserType;
+};

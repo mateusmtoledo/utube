@@ -14,7 +14,7 @@ export function secondsToFormattedDuration(seconds: number): string {
 
 type VideoThumbnailProps = {
   thumbnailUrl: string;
-  videoDuration: number;
+  videoDuration: number | false;
   width?: number | string;
   height?: number | string;
   rounded?: boolean;
@@ -39,9 +39,11 @@ export function VideoThumbnail({
         className={`object-cover ${rounded ? "rounded-xl" : ""}`}
         style={{ width: width || "100%", height: height || "100%" }}
       />
-      <p className="absolute bottom-1 right-1 text-xs font-medium bg-slate-950 bg-opacity-90 px-1 rounded">
-        {secondsToFormattedDuration(videoDuration)}
-      </p>
+      {!!videoDuration && (
+        <p className="absolute bottom-1 right-1 text-xs font-medium bg-slate-950 bg-opacity-90 px-1 rounded">
+          {secondsToFormattedDuration(videoDuration)}
+        </p>
+      )}
     </div>
   );
 }

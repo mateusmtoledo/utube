@@ -1,6 +1,5 @@
 import {
   HTMLAttributeAnchorTarget,
-  PropsWithoutRef,
   ReactNode,
   createContext,
   useContext,
@@ -163,7 +162,9 @@ export default function Sidebar({
             </SidebarItem>
             <SidebarItem Icon={VscHistory}>History</SidebarItem>
             <SidebarItem Icon={RxClock}>Watch later</SidebarItem>
-            <SidebarItem Icon={AiOutlineLike}>Liked videos</SidebarItem>
+            <SidebarItem Icon={AiOutlineLike} href="/liked">
+              Liked videos
+            </SidebarItem>
           </ul>
           <hr className="border-slate-700 my-4 -ml-3" />
           <div>
