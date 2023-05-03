@@ -160,7 +160,9 @@ export default function Sidebar({
             <SidebarItem href="/studio" Icon={AiOutlinePlaySquare}>
               Your videos
             </SidebarItem>
-            <SidebarItem Icon={VscHistory}>History</SidebarItem>
+            <SidebarItem href="/history" Icon={VscHistory}>
+              History
+            </SidebarItem>
             <SidebarItem Icon={RxClock}>Watch later</SidebarItem>
             <SidebarItem Icon={AiOutlineLike} href="/liked">
               Liked videos

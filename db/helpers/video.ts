@@ -152,3 +152,21 @@ export async function getVideosByAuthorId(authorId: number) {
   );
   return videos;
 }
+
+export async function getWatchHistory(authorId: number) {
+  const { rows } = await pool.query(
+    `
+    SELECT ROW_TO_JSON(videos.*) as video, ROW_TO_JSON(users.*) AS author
+    FROM video_views
+    INNER JOIN videos ON videos.id = video_views.video_id
+    INNER JOIN users ON users.id = video_views.user_id
+    WHERE user_id = $1
+    ORDER BY video_views.date DESC;
+  `,
+    [authorId]
+  );
+  return rows.map((row) => ({
+    ...row.video,
+    author: row.author,
+  }));
+}
