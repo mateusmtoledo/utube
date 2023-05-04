@@ -6,13 +6,19 @@ import { SessionProvider } from "next-auth/react";
 import { SkeletonTheme } from "react-loading-skeleton";
 import { SWRConfig } from "swr";
 import api from "@/adapters/axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SidebarModalContext from "@/contexts/SidebarModalContext";
 import { SidebarModal } from "@/components/Sidebar";
 import Head from "next/head";
 import type { ReactElement, ReactNode } from "react";
 import type { NextPage } from "next";
 import { ToastContainer } from "react-toastify";
+import ProgressBar from "@badrap/bar-of-progress";
+import { Router } from "next/router";
+
+const progressBar = new ProgressBar({
+  color: "#22c55e",
+});
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -30,6 +36,12 @@ export default function App({
   function toggleSidebarModal() {
     setSidebarModalVisible((prev) => !prev);
   }
+
+  useEffect(() => {
+    Router.events.on("routeChangeStart", progressBar.start);
+    Router.events.on("routeChangeComplete", progressBar.finish);
+    Router.events.on("routeChangeError", progressBar.finish);
+  }, []);
 
   const getLayout = Component.getLayout ?? ((page) => page);
 
