@@ -139,26 +139,9 @@ export default function Sidebar({
   sidebarExpanded,
   forceExpand,
 }: SidebarProps) {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   let content: ReactNode;
-  if (!session) {
-    content = (
-      <>
-        <ul>
-          <SidebarItem href="/" Icon={AiOutlineHome}>
-            Home
-          </SidebarItem>
-        </ul>
-        <hr className="border-slate-700 my-4" />
-        <div className="px-4">
-          <p className="text-sm mb-2">
-            Sign in to like videos, comment and subscribe.
-          </p>
-          <SignInButton />
-        </div>
-      </>
-    );
-  } else {
+  if (status === "authenticated") {
     content = (
       <>
         <ul>
@@ -228,6 +211,23 @@ export default function Sidebar({
         </ul>
       </>
     );
+  } else {
+    content = (
+      <>
+        <ul>
+          <SidebarItem href="/" Icon={AiOutlineHome}>
+            Home
+          </SidebarItem>
+        </ul>
+        <hr className="border-slate-700 my-4" />
+        <div className="px-4">
+          <p className="text-sm mb-2">
+            Sign in to like videos, comment and subscribe.
+          </p>
+          <SignInButton />
+        </div>
+      </>
+    );
   }
 
   return (
@@ -239,7 +239,7 @@ export default function Sidebar({
           if (forceExpand) return "w-60";
           else if (sidebarExpanded) return "hidden sm:block md:w-60";
           else return "hidden sm:block";
-        })()} sticky top-14 p-3`}
+        })()} sticky top-14 p-3 ${status === "loading" ? "opacity-0" : ""}`}
       >
         <div>
           {content}
