@@ -7,11 +7,11 @@ import { getServerSession } from "next-auth";
 import { GetServerSidePropsContext } from "next";
 import { authOptions } from "./api/auth/[...nextauth]";
 import { PlaylistType } from "@/lib/types";
+import unauthenticatedRedirect from "@/helpers/unauthRedirect";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getServerSession(context.req, context.res, authOptions);
-  // TODO handle no session
-  if (!session) return { props: { playlist: null } };
+  if (!session) return unauthenticatedRedirect;
   const likedVideos = await getLikedVideos(session.user.id);
   return {
     props: {

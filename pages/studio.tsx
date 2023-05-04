@@ -7,6 +7,7 @@ import { getVideosByAuthorId } from "@/db/helpers/video";
 import { GetServerSidePropsContext } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]";
+import unauthenticatedRedirect from "@/helpers/unauthRedirect";
 
 type StudioPageProps = {
   videos: VideoType[];
@@ -32,7 +33,8 @@ StudioPage.getLayout = (page) => {
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getServerSession(context.req, context.res, authOptions);
-  const videos = await getVideosByAuthorId(session?.user.id);
+  if (!session) return unauthenticatedRedirect;
+  const videos = await getVideosByAuthorId(session.user.id);
   return {
     props: {
       videos: videos.map((video) => ({

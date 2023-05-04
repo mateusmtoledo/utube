@@ -21,6 +21,8 @@ import Logo from "./Logo";
 import { CgMenu } from "react-icons/cg";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
+import { SignInButton } from "./UserStatus";
 
 // TODO remove this when users have actual icons
 export function UserIcon({
@@ -136,6 +138,97 @@ export default function Sidebar({
   sidebarExpanded,
   forceExpand,
 }: SidebarProps) {
+  const { data: session } = useSession();
+  let content: ReactNode;
+  if (!session) {
+    content = (
+      <>
+        <ul>
+          <SidebarItem href="/" Icon={AiOutlineHome}>
+            Home
+          </SidebarItem>
+        </ul>
+        <hr className="border-slate-700 my-4" />
+        <div className="px-4">
+          <p className="text-sm mb-2">
+            Sign in to like videos, comment and subscribe.
+          </p>
+          <SignInButton />
+        </div>
+      </>
+    );
+  } else {
+    content = (
+      <>
+        <ul>
+          <SidebarItem href="/" Icon={AiOutlineHome}>
+            Home
+          </SidebarItem>
+          <SidebarItem Icon={BsCollectionPlay}>Subscriptions</SidebarItem>
+        </ul>
+        <hr className="border-slate-700 my-4" />
+        <ul>
+          <SidebarItem Icon={MdOutlineVideoLibrary}>Library</SidebarItem>
+          <SidebarItem href="/studio" Icon={AiOutlinePlaySquare}>
+            Your videos
+          </SidebarItem>
+          <SidebarItem href="/history" Icon={VscHistory}>
+            History
+          </SidebarItem>
+          <SidebarItem Icon={RxClock}>Watch later</SidebarItem>
+          <SidebarItem Icon={AiOutlineLike} href="/liked">
+            Liked videos
+          </SidebarItem>
+        </ul>
+        <hr className="border-slate-700 my-4 -ml-3" />
+        <div>
+          <h2
+            className={`ml-3 mb-1 ${(() => {
+              if (forceExpand) return "";
+              else if (sidebarExpanded) {
+                return "hidden md:block";
+              } else {
+                return "hidden";
+              }
+            })()}`}
+          >
+            Subscriptions
+          </h2>
+          <ul>
+            <SidebarItem
+              Icon={UserIcon.bind(null, {
+                name: "Rafe",
+                bgColor: "bg-yellow-600",
+              })}
+            >
+              Code with Rafe
+            </SidebarItem>
+            <SidebarItem
+              Icon={UserIcon.bind(null, {
+                name: "Phil Jacob",
+                bgColor: "bg-blue-600",
+              })}
+            >
+              Phil Jacob
+            </SidebarItem>
+            <SidebarItem
+              Icon={UserIcon.bind(null, {
+                name: "Danger Zone",
+                bgColor: "bg-red-600",
+              })}
+            >
+              Danger Zone
+            </SidebarItem>
+          </ul>
+        </div>
+        <hr className="border-slate-700 my-4 -ml-3" />
+        <ul>
+          <SidebarItem Icon={SlSettings}>Settings</SidebarItem>
+        </ul>
+      </>
+    );
+  }
+
   return (
     <SidebarContext.Provider
       value={{ sidebarExpanded: !!sidebarExpanded, forceExpand: !!forceExpand }}
@@ -148,71 +241,7 @@ export default function Sidebar({
         })()} sticky top-14 p-3`}
       >
         <div>
-          <ul>
-            <SidebarItem href="/" Icon={AiOutlineHome}>
-              Home
-            </SidebarItem>
-            <SidebarItem Icon={BsCollectionPlay}>Subscriptions</SidebarItem>
-          </ul>
-          <hr className="border-slate-700 my-4" />
-          <ul>
-            <SidebarItem Icon={MdOutlineVideoLibrary}>Library</SidebarItem>
-            <SidebarItem href="/studio" Icon={AiOutlinePlaySquare}>
-              Your videos
-            </SidebarItem>
-            <SidebarItem href="/history" Icon={VscHistory}>
-              History
-            </SidebarItem>
-            <SidebarItem Icon={RxClock}>Watch later</SidebarItem>
-            <SidebarItem Icon={AiOutlineLike} href="/liked">
-              Liked videos
-            </SidebarItem>
-          </ul>
-          <hr className="border-slate-700 my-4 -ml-3" />
-          <div>
-            <h2
-              className={`ml-3 mb-1 ${(() => {
-                if (forceExpand) return "";
-                else if (sidebarExpanded) {
-                  return "hidden md:block";
-                } else {
-                  return "hidden";
-                }
-              })()}`}
-            >
-              Subscriptions
-            </h2>
-            <ul>
-              <SidebarItem
-                Icon={UserIcon.bind(null, {
-                  name: "Rafe",
-                  bgColor: "bg-yellow-600",
-                })}
-              >
-                Code with Rafe
-              </SidebarItem>
-              <SidebarItem
-                Icon={UserIcon.bind(null, {
-                  name: "Phil Jacob",
-                  bgColor: "bg-blue-600",
-                })}
-              >
-                Phil Jacob
-              </SidebarItem>
-              <SidebarItem
-                Icon={UserIcon.bind(null, {
-                  name: "Danger Zone",
-                  bgColor: "bg-red-600",
-                })}
-              >
-                Danger Zone
-              </SidebarItem>
-            </ul>
-          </div>
-          <hr className="border-slate-700 my-4 -ml-3" />
-          <ul>
-            <SidebarItem Icon={SlSettings}>Settings</SidebarItem>
-          </ul>
+          {content}
           <hr className="border-slate-700 my-4 -ml-3" />
           <ul>
             <SidebarItem

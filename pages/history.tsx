@@ -7,11 +7,11 @@ import { authOptions } from "./api/auth/[...nextauth]";
 import { VideoType } from "@/lib/types";
 import { getWatchHistory } from "@/db/helpers/video";
 import WatchHistory from "@/components/History";
+import unauthenticatedRedirect from "@/helpers/unauthRedirect";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getServerSession(context.req, context.res, authOptions);
-  // TODO proper response when user is not authenticated;
-  if (!session) return { props: {} };
+  if (!session) return unauthenticatedRedirect;
   const videos = await getWatchHistory(session.user.id);
   const historyVideos = videos.map((video) => ({
     ...video,
