@@ -103,6 +103,7 @@ function SidebarItem({ Icon, href, children, target }: SidebarItemProps) {
         })()}`}
       >
         {children}
+        {!href && <span> (WIP)</span>}
       </p>
     </>
   );
@@ -118,7 +119,7 @@ function SidebarItem({ Icon, href, children, target }: SidebarItemProps) {
           {content}
         </Link>
       ) : (
-        <button className={className}>{content}</button>
+        <button className={`${className} opacity-40`}>{content}</button>
       )}
     </li>
   );
