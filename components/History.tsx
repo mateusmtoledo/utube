@@ -10,10 +10,14 @@ type WatchHistoryVideoProps = {
 function WatchHistoryVideo({ video }: WatchHistoryVideoProps) {
   return (
     <li>
-      <Link className="flex gap-2 h-32" href={getVideoUrl(video.id)}>
+      <Link
+        className="flex flex-col sm:flex-row gap-2"
+        href={getVideoUrl(video.id)}
+      >
         <VideoThumbnail
           thumbnailUrl={video.thumbnail}
           videoDuration={video.duration}
+          className="w-full sm:max-w-[230px]"
         />
         <div>
           <VideoTitle videoTitle={video.title} />

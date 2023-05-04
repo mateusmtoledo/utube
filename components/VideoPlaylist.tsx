@@ -11,16 +11,17 @@ type VideoPlaylistProps = {
 export default function VideoPlaylist({ playlist }: VideoPlaylistProps) {
   const playlistIsEmpty = playlist.videos.length === 0;
   return (
-    <div className="flex gap-2 mx-3">
+    <div className="flex flex-col lg:flex-row gap-2 mx-auto max-w-[1500px]">
       <div
-        className={`max-w-sm w-full ${
+        className={`lg:max-w-xs w-full ${
           !playlistIsEmpty ? "bg-slate-900 p-6" : ""
-        } rounded-2xl min-h-[800px]`}
+        } rounded-2xl`}
       >
         {!playlistIsEmpty && (
           <VideoThumbnail
             thumbnailUrl={playlist.videos[0].thumbnail}
             videoDuration={false}
+            className="max-w-sm m-auto"
           />
         )}
         <p className="text-2xl font-semibold mt-6">{playlist.title}</p>
