@@ -226,7 +226,7 @@ export function VideoDetailsForm({
                 <>
                   <p className="font-medium">Video URL:</p>
                   <Link className="text-blue-400" href={videoURL}>
-                    {videoURL}
+                    {videoURL.split("//")[1]}
                   </Link>
                 </>
               ) : (
