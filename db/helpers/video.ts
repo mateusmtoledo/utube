@@ -142,11 +142,15 @@ export async function getVideosByAuthorId(authorId: number) {
         'id', users.id,
         'name', users.name,
         'image', users.image
-      ) AS author
+      ) AS author,
+      COUNT(reactions.id) as like_count
       FROM videos
       INNER JOIN users
       ON users.id = videos.author_id
-      WHERE videos.author_id = $1;
+      LEFT JOIN reactions
+      ON reactions.video_id = videos.id AND reactions.reaction = 'like'
+      WHERE videos.author_id = $1
+      GROUP BY users.id, videos.id, title, description, thumbnail, date, view_count, duration;
     `,
     [authorId]
   );

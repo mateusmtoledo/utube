@@ -32,8 +32,16 @@ type StudioVideoProps = {
 };
 
 function StudioVideo({ video, setEditing }: StudioVideoProps) {
-  const { id, thumbnail, duration, view_count, date, title, description } =
-    video;
+  const {
+    id,
+    thumbnail,
+    duration,
+    view_count,
+    date,
+    title,
+    description,
+    like_count,
+  } = video;
   const formattedDate = useFormattedDate(date);
   const [hovered, setHovered] = useState(false);
 
@@ -72,7 +80,7 @@ function StudioVideo({ video, setEditing }: StudioVideoProps) {
       <p>{formattedDate}</p>
       <p>{view_count}</p>
       <p>0</p>
-      <p>0</p>
+      <p>{like_count}</p>
     </li>
   );
 }

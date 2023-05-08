@@ -10,6 +10,7 @@ export type VideoType = {
   width: number;
   height: number;
   source_url: string;
+  like_count: number;
 };
 
 export type UserType = {
