@@ -15,6 +15,9 @@ import type { NextPage } from "next";
 import { ToastContainer } from "react-toastify";
 import ProgressBar from "@badrap/bar-of-progress";
 import { Router } from "next/router";
+import { Inter } from "next/font/google";
+
+const font = Inter({ subsets: ["latin"] });
 
 const progressBar = new ProgressBar({
   color: "#22c55e",
@@ -60,10 +63,13 @@ export default function App({
         <SessionProvider session={session}>
           <SkeletonTheme baseColor="#334155" highlightColor="#475569">
             <SidebarModalContext.Provider value={{ toggleSidebarModal }}>
-              {getLayout(<Component {...pageProps} />)}
-              {sidebarModalVisible && (
-                <SidebarModal toggleSidebarModal={toggleSidebarModal} />
-              )}
+              <div className={font.className}>
+                {getLayout(<Component {...pageProps} />)}
+                {sidebarModalVisible && (
+                  <SidebarModal toggleSidebarModal={toggleSidebarModal} />
+                )}
+                <div id="portal" />
+              </div>
             </SidebarModalContext.Provider>
           </SkeletonTheme>
         </SessionProvider>
