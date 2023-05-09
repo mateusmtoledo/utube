@@ -139,7 +139,7 @@ export default function Sidebar({
   sidebarExpanded,
   forceExpand,
 }: SidebarProps) {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   let content: ReactNode;
   if (status === "authenticated") {
     content = (
@@ -219,8 +219,26 @@ export default function Sidebar({
             Home
           </SidebarItem>
         </ul>
-        <hr className="border-slate-700 my-4" />
-        <div className="px-4">
+        <hr
+          className={`border-slate-700 my-4 ${(() => {
+            if (forceExpand) return "";
+            else if (sidebarExpanded) {
+              return "hidden md:block";
+            } else {
+              return "hidden";
+            }
+          })()}`}
+        />
+        <div
+          className={`px-4 ${(() => {
+            if (forceExpand) return "";
+            else if (sidebarExpanded) {
+              return "hidden md:block";
+            } else {
+              return "hidden";
+            }
+          })()}`}
+        >
           <p className="text-sm mb-2">
             Sign in to like videos, comment and subscribe.
           </p>
