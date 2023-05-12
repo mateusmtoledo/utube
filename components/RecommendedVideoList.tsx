@@ -34,7 +34,7 @@ export default function RecommendedVideoList() {
   const { data, isLoading } = useVideos();
   if (isLoading || !data) return null;
   return (
-    <ul className="max-w-96 flex flex-col gap-2">
+    <ul className="flex-1 max-w-sm flex flex-col gap-2">
       {data.videos.map((video) => (
         <RecommendedVideo key={video.id} video={video} />
       ))}
