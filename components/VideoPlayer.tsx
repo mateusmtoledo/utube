@@ -232,11 +232,11 @@ export default function VideoPlayer({ video }: VideoPlayerProps) {
         },
       }}
     >
-      <div ref={containerRef} className="relative">
+      <div ref={containerRef} className="relative w-full aspect-video min-h-0">
         <video
           ref={videoCallback}
           onClick={togglePause}
-          className="h-full w-full"
+          className="w-full h-full object-contain"
         >
           <source src={video.source_url} type="video/mp4" />
         </video>

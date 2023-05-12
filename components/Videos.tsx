@@ -30,13 +30,17 @@ export function VideoThumbnail({
   className = "",
 }: VideoThumbnailProps) {
   return (
-    <div className={`relative aspect-[9/5] ${className}`}>
+    <div
+      className={`${
+        rounded ? "rounded-xl" : ""
+      } bg-slate-700 relative aspect-[9/5] ${className}`}
+    >
       <Image
         src={thumbnailUrl}
         alt=""
         width={typeof width === "number" ? width : 340}
         height={typeof height === "number" ? height : 180}
-        className={`object-cover ${rounded ? "rounded-xl" : ""}`}
+        className={`object-contain`}
         style={{ width: width || "100%", height: height || "100%" }}
       />
       {!!videoDuration && (
