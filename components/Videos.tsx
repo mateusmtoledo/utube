@@ -117,7 +117,7 @@ export function VideoDetails({
   viewCount,
   authorName,
 }: VideoDetailsProps) {
-  const views = viewCount ? viewCount + " views" : null;
+  const views = typeof viewCount === "number" ? viewCount + " views" : null;
   const dateString = useRelativeTime(date);
   const text = concatWithSeparator(authorName, views, dateString);
   return <p className="text-slate-400 text-sm">{text}</p>;
