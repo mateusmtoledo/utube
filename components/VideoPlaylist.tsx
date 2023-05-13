@@ -20,7 +20,7 @@ export default function VideoPlaylist({ playlist }: VideoPlaylistProps) {
         {!playlistIsEmpty && (
           <VideoThumbnail
             thumbnailUrl={playlist.videos[0].thumbnail}
-            videoDuration={false}
+            videoDuration={null}
             className="max-w-sm m-auto"
           />
         )}
@@ -55,7 +55,7 @@ function PlaylistVideos({ videos }: PlaylistVideosProps) {
       </p>
     );
   return (
-    <ol className="w-full my-3">
+    <ol className="flex flex-col gap-4 sm:gap-0 w-full my-3">
       {videos.map((video, index) => (
         <PlaylistVideo video={video} key={video.id} index={index + 1} />
       ))}
@@ -70,16 +70,18 @@ type PlaylistVideoProps = {
 
 function PlaylistVideo({ video, index }: PlaylistVideoProps) {
   return (
-    <li className="h-28 w-full rounded-xl hover:bg-slate-800">
+    <li className="h-full sm:h-24 w-full rounded-xl hover:bg-slate-800">
       <Link
         href={getVideoUrl(video.id)}
-        className="px-4 py-2 flex gap-4 w-full h-full"
+        className="px-4 py-2 flex flex-col sm:flex-row gap-4 w-full h-full"
       >
-        <p className="text-slate-500 font-medium self-center">{index}</p>
+        <p className="hidden sm:block text-slate-500 font-medium self-center">
+          {index}
+        </p>
         <VideoThumbnail
           thumbnailUrl={video.thumbnail}
           videoDuration={video.duration}
-          className="h-full"
+          className="self-center max-w-xs sm:w-auto sm:h-full"
         />
         <div className="flex flex-col gap-1">
           <VideoTitle videoTitle={video.title} />

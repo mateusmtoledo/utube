@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { useRelativeTime } from "../helpers/timeFormatter";
+import React from "react";
 
 export function secondsToFormattedDuration(seconds: number): string {
   const numHours = Math.floor(seconds / 3600);
@@ -14,11 +15,11 @@ export function secondsToFormattedDuration(seconds: number): string {
 
 type VideoThumbnailProps = {
   thumbnailUrl: string;
-  videoDuration: number | false;
+  videoDuration: number | null;
   width?: number | string;
   height?: number | string;
-  rounded?: boolean;
   className?: string;
+  rounded?: boolean;
 };
 
 export function VideoThumbnail({
@@ -33,15 +34,17 @@ export function VideoThumbnail({
     <div
       className={`${
         rounded ? "rounded-xl" : ""
-      } bg-slate-700 relative aspect-[9/5] ${className}`}
+      } bg-slate-700 relative aspect-video w-full ${className}`}
+      style={{
+        width,
+        height,
+      }}
     >
       <Image
         src={thumbnailUrl}
         alt=""
-        width={typeof width === "number" ? width : 340}
-        height={typeof height === "number" ? height : 180}
-        className={`object-contain`}
-        style={{ width: width || "100%", height: height || "100%" }}
+        fill
+        className={`w-full h-full object-contain rounded-[inherit]`}
       />
       {!!videoDuration && (
         <p className="absolute bottom-1 right-1 text-xs font-medium bg-slate-950 bg-opacity-90 px-1 rounded">

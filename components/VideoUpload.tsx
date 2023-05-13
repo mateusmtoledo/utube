@@ -19,6 +19,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import getVideoUrl from "@/helpers/getVideoUrl";
 import { toast } from "react-toastify";
+import { VideoThumbnail } from "./Videos";
 
 type VideoFormModalProps = {
   children: ReactNode;
@@ -219,7 +220,13 @@ export function VideoDetailsForm({
           </div>
           <div className="rounded overflow-hidden self-center md:self-start order-first md:order-none bg-slate-900 h-max">
             <div className="relative w-72 h-40 bg-slate-300">
-              {video ? <Image src={video?.thumbnail} alt="" fill /> : null}
+              {video ? (
+                <VideoThumbnail
+                  videoDuration={null}
+                  thumbnailUrl={video.thumbnail}
+                  rounded={false}
+                />
+              ) : null}
             </div>
             <div className="p-4 text-sm text-slate-300">
               {video ? (
