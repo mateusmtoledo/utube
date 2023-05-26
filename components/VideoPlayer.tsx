@@ -59,7 +59,7 @@ function VideoControls() {
   const videoDurationString = secondsToFormattedDuration(videoDuration);
 
   return (
-    <div className="absolute bottom-0 w-full p-2">
+    <div className="absolute bottom-0 w-full p-2 video-controls-shadow">
       <div className="w-full px-1 mb-2">
         <VideoProgressBar />
       </div>
@@ -146,6 +146,7 @@ export default function VideoPlayer({ video }: VideoPlayerProps) {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [volume, setVolume] = useState(1);
   const [muted, setMuted] = useState(false);
+  const [hovering, setHovering] = useState(true);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -232,15 +233,20 @@ export default function VideoPlayer({ video }: VideoPlayerProps) {
         },
       }}
     >
-      <div ref={containerRef} className="relative w-full aspect-video min-h-0">
+      <div
+        ref={containerRef}
+        className={`relative w-full aspect-video min-h-0`}
+        onMouseEnter={() => setHovering(true)}
+        onMouseLeave={() => setHovering(false)}
+      >
         <video
           ref={videoCallback}
           onClick={togglePause}
-          className="w-full h-full object-contain"
+          className={`w-full h-full object-contain`}
         >
           <source src={video.source_url} type="video/mp4" />
         </video>
-        <VideoControls />
+        {hovering ? <VideoControls /> : null}
       </div>
     </VideoPlayerContext.Provider>
   );
