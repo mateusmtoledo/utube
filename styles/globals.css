@@ -31,10 +31,18 @@
 .volume-control::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   border-radius: 999px;
-  background: #4ade80;
+  background: #ffffff;
+}
+
+.volume-control::-moz-range-thumb {
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  color: #ffffff;
+  border-radius: 999px;
 }
 
 .studio-table-row {
