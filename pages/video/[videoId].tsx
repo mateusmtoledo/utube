@@ -21,6 +21,7 @@ import api from "@/adapters/axios";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]";
 import { getLikeCount, getReaction } from "@/db/helpers/reaction";
+import { useSession } from "next-auth/react";
 
 type Params = {
   videoId: string;
@@ -34,6 +35,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   let userReaction;
   if (session)
     userReaction = await getReaction(Number(videoId), session?.user.id);
+  else userReaction = null;
   const likeCount = await getLikeCount(Number(videoId));
   return {
     props: {
@@ -59,8 +61,10 @@ const VideoPage: NextPageWithLayout<VideoPageProps> = ({
   const [likeCount, setLikeCount] = useState(initialLikeCount);
   const { id, title, author, description, view_count, date } = video;
   const relativeTime = useRelativeTime(date);
+  const { status } = useSession();
 
   async function likeVideo() {
+    if (status !== "authenticated") return;
     await api.post(`/video/${id}/reaction`, {
       reaction: "like",
     });
@@ -69,6 +73,7 @@ const VideoPage: NextPageWithLayout<VideoPageProps> = ({
   }
 
   async function dislikeVideo() {
+    if (status !== "authenticated") return;
     await api.post(`/video/${id}/reaction`, {
       reaction: "dislike",
     });
@@ -77,6 +82,7 @@ const VideoPage: NextPageWithLayout<VideoPageProps> = ({
   }
 
   async function removeReaction() {
+    if (status !== "authenticated") return;
     await api.delete(`/video/${id}/reaction`);
     if (userReaction === "like") setLikeCount((prev) => prev - 1);
     setUserReaction(null);
