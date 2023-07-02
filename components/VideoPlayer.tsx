@@ -26,7 +26,7 @@ function VideoProgressBar() {
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="flex items-end h-6 cursor-pointer"
+      className="flex items-end h-4 cursor-pointer"
       onClick={onClickSkip}
     >
       <div
