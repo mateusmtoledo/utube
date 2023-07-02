@@ -83,6 +83,7 @@ function VideoInput({ handleUpload }: VideoInputProps) {
           <p className="font-medium px-4 py-2 rounded text-sm bg-green-500 text-slate-950">
             SELECT FILE
           </p>
+          <p className="text-xs -mt-4 text-slate-500">(Max. 40MB)</p>
         </div>
         <input
           type="file"
@@ -262,7 +263,6 @@ export function VideoDetailsForm({
     </form>
   );
 }
-
 type VideoUploadFormProps = {
   closeForm: () => void;
 };
@@ -273,6 +273,10 @@ function VideoUploadForm({ closeForm }: VideoUploadFormProps) {
   const [video, setVideo] = useState<VideoType | null>(null);
 
   async function handleUpload(file: File) {
+    if (file.size > 40000000) {
+      toast.error("Maximum file size is 40MB.");
+      return;
+    }
     setFile(file);
     const formData = new FormData();
     formData.append("file", file);
